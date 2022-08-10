@@ -1,8 +1,8 @@
 #include "helper.hpp"
+#include <exception>
 #include <iostream>
 #include <memory>
 #include <vector>
-#include <exception>
 // template <typename T> class A {
 // public:
 //   typedef T number;
@@ -61,7 +61,8 @@
 //   // std::vector<int> vec2(alloc);
 //   // std::vector<int> vec3(std::allocator<int>{});
 //   // vector instance of the allocator
-//   // I guess it's trying to cast it and use the fill one but in that pros he finds that it's not a simple type!
+//   // I guess it's trying to cast it and use the fill one but in that pros he
+//   finds that it's not a simple type!
 
 //   // vec1.push_back(5);
 //   // vec2.push_back(1);
@@ -116,12 +117,91 @@
 //   return 0;
 // }
 
+// int main() {
+//   // std::vector<int> arr(50);
+//   // std::cout << arr[0] << '\n';
+//   // std::cout << arr[1] << '\n';
+//   // std::cout << arr[2] << '\n';
+//   // std::cout << arr[3] << '\n';
+//   // std::cout << arr[4] << '\n';
+//   // // std::vector<int> t;
+//   // // std::cout << t.empty() << '\n';
+//   // // t.reserve(5);
+//   // // std::cout << t.empty() << '\n';
+//   // // t.push_back(1);
+//   // // std::cout << t.empty() << '\n';
+//   // // t.pop_back();
+//   // // std::cout << t.empty() << '\n';
+//   // std::cout << arr.at(0) << '\n';
+//   // std::cout << arr.at(10) << '\n';
+
+//   // std::vector<int> arr2;
+//   // arr2.push_back(5);
+//   // arr2.push_back(2);
+//   // std::cout << arr2.front() << '\n';
+//   // std::cout << arr2.back() << '\n';
+
+//   // arr2.push_back(1);
+//   // arr2.push_back(1);
+//   // arr2.push_back(1);
+//   // arr2.push_back(1);
+//   // arr2.push_back(1);
+//   // std::cout << arr2.at(0) << " " << arr2.capacity() << '\n';
+//   // std::cout << arr2.at(6) << " " << arr2.capacity() << '\n';
+
+//   std::allocator<int> st;
+//   int *arr = st.allocate(sizeof(int) * 5);
+//   std::cout << arr[0] << '\n';
+//   std::cout << arr[1] << '\n';
+//   std::cout << arr[2] << '\n';
+//   std::cout << arr[3] << '\n';
+//   std::cout << arr[4] << '\n';
+
+// }
+
+// struct A {
+//   static int id;
+//   int x;
+//   A() : x(id) {
+//     id++;
+//     std::cerr << "const" << std::endl;
+//   }
+//   ~A() { std::cerr << "dest" << std::endl; }
+//   A(const A &src) { std::cerr << "copy" << std::endl; }
+// };
+// int A::id = 0;
+
+// int main() {
+//   // std::allocator<A> st;
+//   // A *arr = st.allocate(sizeof(A) * 5);
+//   // st.destroy(arr);
+//   // st.destroy(arr + 1);
+//   // st.destroy(arr + 2);
+//   // st.destroy(arr + 3);
+//   // st.destroy(arr + 4);
+//   A y; // dest
+//   std::vector<A> x;
+//   x.push_back(y); // dest
+//   x.push_back(y); // dest
+//   std::vector<A> test;
+//   test.push_back(y); // dest
+//   test.push_back(y); // dest
+//   test = x;
+//   // std::vector<A> test;
+//   // test.push_back(y); // dest
+//   // test.push_back(y); // dest
+//   // std::cerr  << "before assi" << std::endl;
+//   // // test = x;
+//   // std::cerr  << "after assi" << std::endl;
+//   // std::cerr << "before" << std::endl;
+//   std::cerr << "end\n";
+// }
+
 
 int main() {
-  std::vector<int> arr(5, 99);
-  std::cout << arr[0] << '\n';
-  std::cout << arr[1] << '\n';
-  std::cout << arr[2] << '\n';
-  std::cout << arr[3] << '\n';
-  std::cout << arr[4] << '\n';
+  std::vector<int> x;
+  x.push_back(1);
+  x.push_back(1);
+  x.push_back(1);
+  std::cout << x.size() << ' ' << x.capacity() << '\n';
 }
