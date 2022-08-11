@@ -1,5 +1,7 @@
 #include "vector/ft_vector.hpp"
 #include <iostream>
+#include <string>
+#include <vector>
 
 using std::cout;
 
@@ -274,6 +276,49 @@ int main() {
     assert(x.capacity() == 2 && x.size() == 0);
     std::cout << "testing assign() method :: pass\n";
   } 
+
+  {
+    ft::vector<int> x;
+    x.push_back(10);
+    x.push_back(10);
+    x.resize(1, 5);
+    assert(x.capacity() == 2 && x.size() == 1);
+    assert(x.at(0) == 10);
+  }
+  {
+    ft::vector<int> x;
+    x.push_back(10);
+    x.push_back(10);
+    assert(x.capacity() == 2 && x.size() == 2);
+    x.resize(4, 5);
+    assert(x.capacity() == 4 && x.size() == 4);
+    assert(x.at(0) == 10 && x.at(1) == 10);
+    assert(x.at(2) == 5 && x.at(3) == 5);
+    }
+   {
+    ft::vector<int> x;
+    x.push_back(10);
+    x.push_back(10);
+    x.push_back(10);
+    x.push_back(10);
+    x.push_back(10);
+    assert(x.capacity() == 8 && x.size() == 5);
+    x.resize(6, 5);
+    assert(x.capacity() == 8 && x.size() == 6);
+    assert(x.at(0) == 10 && x.at(1) == 10);
+    assert(x.at(2) == 10 && x.at(3) == 10);
+    assert(x.at(4) == 10 && x.at(5) == 5);
+    std::cout << "testing resize() method :: pass\n";
+  }
+  {
+    ft::vector<char> a;
+    ft::vector<int> b;
+    ft::vector<std::string> c;
+    assert(a.max_size() == std::allocator<char>().max_size());
+    assert(b.max_size() == std::allocator<int>().max_size());
+    assert(c.max_size() == std::allocator<std::string>().max_size());
+    std::cout << "testing max_size() method :: pass\n";
+  }
 
   std::cerr << "all passed\n";
   system("leaks a.out");

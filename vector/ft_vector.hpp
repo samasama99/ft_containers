@@ -170,8 +170,33 @@ public:
   // Other Methods ::
   // Capacity:
   size_type size() const { return _size; };
-  void resize(size_type n, value_type val = value_type()){
-
+  size_type max_size() const {
+    return _alloc.max_size();
+  };
+  void resize(size_type n, value_type val = value_type()) {
+    if (n < _size) {
+      for (int i = n; i < _size; ++i) {
+        _alloc.destroy(_array + i);
+        _size--;
+      }
+    } else if (n > _capacity) {
+      value_type *tmp = _alloc.allocate(n);
+      if (_array != NULL) {
+        memcpy(tmp, _array, sizeof(value_type) * _size);
+        for (int i = _size; i < n; ++i) {
+          tmp[i] = val;
+          _size++;
+        }
+      }
+      _alloc.deallocate(_array, _capacity);
+      _array = tmp;
+      _capacity = _size = n;
+    } else if (n > _size) {
+      for (int i = _size; i < n; ++i) {
+        _array[i] = val;
+        _size++;
+      }
+    }
   };
   size_type capacity() const { return _capacity; };
   bool empty() const { return _size == 0; };
@@ -223,7 +248,7 @@ public:
       for (int i = 0; i < n; ++i) {
         _array[i] = val;
       }
-    _capacity = _size = n;
+      _capacity = _size = n;
     }
   };
   void push_back(const value_type &val) {

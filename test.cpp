@@ -210,16 +210,29 @@ int A::id = 0;
 // }
 
 
-int main() {
-  std::vector<int> x;
-  x.push_back(1);
-  x.push_back(1);
-  x.push_back(1);
-  std::cout << "before resize\n";
-  std::cout << x.capacity() << ' ' << x.size() << '\n';
-  x.assign(0, 0);
-  std::cout << "after resize\n";
-  std::cout << x.capacity() << ' ' << x.size() << '\n';
-//
-}
+// int main() {
+//   std::vector<int> x;
+//   x.push_back(1);
+//   x.push_back(1);
+//   x.push_back(1);
+//   std::cout << x.capacity() << ' ' << x.size() << '\n';
+//   std::cout << "before resize\n";
+//   std::cout << x.capacity() << ' ' << x.size() << '\n';
+//   x.resize(0, 0);
+//   std::cout << "after resize\n";
+//   std::cout << x.capacity() << ' ' << x.size() << '\n';
+// //
+// }
 
+
+int main() {
+  std::string str {"hello"};
+  std::string str2 = "";
+  memcpy(&str2, &str, sizeof(std::string));
+  std::cout << str << '\n';
+  std::cout << str2 << '\n';
+  memset(&str2, 0, sizeof(std::string));
+  std::cout << str2 << '\n';
+  memset(&str2, (char)1, sizeof(std::string));
+  std::cout << str2 << '\n';
+}
