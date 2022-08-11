@@ -159,17 +159,17 @@
 
 // }
 
-// struct A {
-//   static int id;
-//   int x;
-//   A() : x(id) {
-//     id++;
-//     std::cerr << "const" << std::endl;
-//   }
-//   ~A() { std::cerr << "dest" << std::endl; }
-//   A(const A &src) { std::cerr << "copy" << std::endl; }
-// };
-// int A::id = 0;
+struct A {
+  static int id;
+  int x;
+  A() : x(id) {
+    id++;
+    std::cerr << "const" << std::endl;
+  }
+  ~A() { std::cerr << "dest" << std::endl; }
+  A(const A &src) { std::cerr << "copy" << std::endl; }
+};
+int A::id = 0;
 
 // int main() {
 //   // std::allocator<A> st;
@@ -198,10 +198,28 @@
 // }
 
 
+// int main() {
+//   std::vector<A> x;
+//   x.push_back(A());
+//   x.push_back(A());
+//   x.push_back(A());
+//   // std::cerr << x.size() << ' ' << x.capacity() << '\n';
+//   std::cerr << "pop\n";
+//   x.pop_back();
+//   std::cerr << "out\n";
+// }
+
+
 int main() {
   std::vector<int> x;
   x.push_back(1);
   x.push_back(1);
   x.push_back(1);
-  std::cout << x.size() << ' ' << x.capacity() << '\n';
+  std::cout << "before resize\n";
+  std::cout << x.capacity() << ' ' << x.size() << '\n';
+  x.assign(0, 0);
+  std::cout << "after resize\n";
+  std::cout << x.capacity() << ' ' << x.size() << '\n';
+//
 }
+

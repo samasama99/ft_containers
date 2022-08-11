@@ -118,7 +118,7 @@ public:
               << _capacity << '\n';
 #endif
     try {
-      _array = _alloc.allocate(n * sizeof(value_type));
+      _array = _alloc.allocate(n);
     } catch (std::length_error &e) {
       throw std::length_error("vector");
     }
@@ -156,8 +156,8 @@ public:
       _alloc.deallocate(_array, _capacity);
       _array = NULL;
     }
-    _array = _alloc.allocate(sizeof(value_type) * x._capacity);
-    memcpy(_array, x._array, sizeof(value_type) * x._capacity);
+    _array = _alloc.allocate(x._capacity);
+    memcpy(_array, x._array, x._capacity);
     _capacity = x._capacity;
     _size = x._size;
     _alloc = x._alloc;
@@ -172,28 +172,18 @@ public:
   size_type size() const { return _size; };
   void resize(size_type n, value_type val = value_type()){
 
-      // #ifdef DEBUG
-      //     std::cerr << "resize method with size " << _size << " and value "
-      //               << val << '\n';
-      // #endif
-      //     try {
-      //       _array = _alloc.allocate(n * sizeof(value_type));
-      //     } catch (std::length_error &e) {
-      //       throw std::length_error("vector");
-      //     }
-      //     for (std::size_t i = 0; i < _capacity; i++) {
-      //       _array[i] = val;
-      //     }
   };
   size_type capacity() const { return _capacity; };
   bool empty() const { return _size == 0; };
   void reserve(size_type n) {
     if (n < _capacity)
       return;
-    value_type *tmp = _alloc.allocate(sizeof(value_type) * n);
-    memset(tmp, 0, sizeof(value_type) * n);
-    memcpy(tmp, _array, _capacity);
-    _alloc.deallocate(_array, _capacity);
+    value_type *tmp = _alloc.allocate(n);
+    if (_array != NULL) {
+      memset(tmp, 0, sizeof(value_type) * n);
+      memcpy(tmp, _array, _capacity);
+      _alloc.deallocate(_array, _capacity);
+    }
     _array = tmp;
     _capacity = n;
   };
@@ -215,14 +205,34 @@ public:
   //  Modifiers ::
   // template <class InputIterator>
   // void assign(InputIterator first, InputIterator last);
-  void assign(size_type n, const value_type &val);
+  void assign(size_type n, const value_type &val) {
+    if (_capacity >= n) {
+      for (int i = 0; i < n; ++i) {
+        _alloc.destroy(&_array[i]);
+        _array[i] = val;
+      }
+      _size = n;
+    } else {
+      if (_array != NULL) {
+        for (int i = 0; i < _size; ++i) {
+          _alloc.destroy(&_array[i]);
+        }
+        _alloc.deallocate(_array, _capacity);
+      }
+      _array = _alloc.allocate(n);
+      for (int i = 0; i < n; ++i) {
+        _array[i] = val;
+      }
+    _capacity = _size = n;
+    }
+  };
   void push_back(const value_type &val) {
     if (_size == _capacity) {
       if (_capacity == 0)
         _capacity = 1;
       else
         _capacity *= 2;
-      value_type *tmp = _alloc.allocate(sizeof(value_type) * _capacity);
+      value_type *tmp = _alloc.allocate(_capacity);
       if (_array != NULL) {
         memcpy(tmp, _array, sizeof(value_type) * _capacity);
         for (int i = 0; i < _size; ++i)
@@ -235,9 +245,24 @@ public:
     _array[_size] = val;
     ++_size;
   };
-  void pop_back();
-  void swap(vector &x);
-  void clear();
+  void pop_back() {
+    --_size;
+    if (_array == NULL)
+      return;
+    _alloc.destroy(&_array[_size - 1]);
+  };
+  void swap(vector &x) {
+    std::swap(x._array, _array);
+    std::swap(x._size, _size);
+    std::swap(x._capacity, _capacity);
+    std::swap(x._alloc, _alloc);
+  };
+  void clear() {
+    while (_size) {
+      _alloc.destroy(&_array[_size - 1]);
+      --_size;
+    }
+  };
   // to do
   // iterator insert (iterator position, const value_type& val);
   // void insert (iterator position, size_type n, const value_type& val);
@@ -250,7 +275,7 @@ public:
   // to do
 
   // Allocator
-  allocator_type get_allocator() const;
+  allocator_type get_allocator() const { return _alloc; };
 
   // Attributes ::
 private:
