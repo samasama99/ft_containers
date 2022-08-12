@@ -1,5 +1,6 @@
 #include "vector/ft_vector.hpp"
 #include <iostream>
+#include <list>
 #include <string>
 #include <vector>
 
@@ -248,7 +249,7 @@ int main() {
     assert(x.at(1) == 20);
     assert(x.at(3) == 20);
     assert(x.at(4) == 20);
-  } 
+  }
   {
     ft::vector<int> x;
     x.push_back(10);
@@ -267,7 +268,7 @@ int main() {
     assert(x.at(1) == 20);
     assert(x.at(3) == 20);
     assert(x.at(4) == 20);
-  } 
+  }
   {
     ft::vector<int> x;
     x.push_back(10);
@@ -275,7 +276,7 @@ int main() {
     x.assign(0, 0);
     assert(x.capacity() == 2 && x.size() == 0);
     std::cout << "testing assign() method :: pass\n";
-  } 
+  }
 
   {
     ft::vector<int> x;
@@ -294,8 +295,8 @@ int main() {
     assert(x.capacity() == 4 && x.size() == 4);
     assert(x.at(0) == 10 && x.at(1) == 10);
     assert(x.at(2) == 5 && x.at(3) == 5);
-    }
-   {
+  }
+  {
     ft::vector<int> x;
     x.push_back(10);
     x.push_back(10);
@@ -319,7 +320,80 @@ int main() {
     assert(c.max_size() == std::allocator<std::string>().max_size());
     std::cout << "testing max_size() method :: pass\n";
   }
+  {
+    std::vector<int> vec;
+    vec.push_back(1);
+    vec.push_back(2);
+    vec.push_back(3);
+    ft::vector<int> vec2(vec.begin(), vec.end());
+    assert(vec[0] == vec2[0]);
+    assert(vec[1] == vec2[1]);
+    assert(vec[2] == vec2[2]);
+  }
+  {
+    std::list<int> lst;
+    lst.push_back(1);
+    lst.push_back(2);
+    lst.push_back(3);
+    ft::vector<int> vec2(lst.begin(), lst.end());
+    assert(lst.back() == vec2[2]);
+    lst.pop_back();
+    assert(lst.back() == vec2[1]);
+    lst.pop_back();
+    assert(lst.back() == vec2[0]);
+    std::cout << "testing range constructor :: pass\n";
+  }
+  {
+    ft::vector<int> vec;
+    vec.push_back(5);
+    vec.push_back(6);
+    ft::vector<int>::iterator b = vec.begin();
+    ft::vector<int>::iterator e = vec.end();
 
+    assert(vec[0] == *b);
+    assert(vec[1] == *(b + 1));
+    assert(vec[0] == b[0]);
+    assert(vec[1] == b[1]);
+
+    assert(vec[1] == *(e - 1));
+    assert(vec[0] == *(e - 2));
+    std::cout << "testing end() begin() :: pass\n";
+  }
+  {
+    ft::vector<int> x;
+    x.push_back(0);
+    x.push_back(1);
+    x.push_back(2);
+    x.push_back(3);
+    ft::vector<int>::iterator b = x.begin();
+    ft::vector<int>::iterator e = x.end();
+    for (int i = 0;i < x.size();++i) {
+      assert(b[i] == x[i]);
+    }
+    int index = 0;
+    for (ft::vector<int>::iterator i = b;i < e;++i) {
+      assert(x[index] == *i);
+      index++;
+    }
+    int rindex = x.size();
+    for (ft::vector<int>::iterator i = e;e != i;--i) {
+      rindex--;
+      assert(x[rindex] == *i);
+    }
+    std::cout << "testing operator[] overloading in vectorIterator :: pass\n";
+    std::cout << "testing operator== overloading in vectorIterator :: pass\n";
+    std::cout << "testing operator< overloading in vectorIterator :: pass\n";
+    std::cout << "testing operator++ pre overloading in vectorIterator :: pass\n";
+    std::cout << "testing operator-- pre overloading in vectorIterator :: pass\n";
+    std::cout << "testing operator- pre overloading in vectorIterator :: pass\n";
+    std::cout << "testing operator+ pre overloading in vectorIterator :: pass\n";
+    assert(*(b++)== x[0]);
+    assert(*b == x[1]);
+    assert(*(b--) == x[1]);
+    assert(*b == x[0]);
+    std::cout << "testing operator++ post overloading in vectorIterator :: pass\n";
+    std::cout << "testing operator-- post overloading in vectorIterator :: pass\n";
+  }
   std::cerr << "all passed\n";
   system("leaks a.out");
 }

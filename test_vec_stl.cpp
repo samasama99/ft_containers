@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <list>
 
 using std::cout;
 
@@ -308,6 +309,87 @@ int main() {
     assert(x.at(2) == 10 && x.at(3) == 10);
     assert(x.at(4) == 10 && x.at(5) == 5);
     std::cout << "testing resize() method :: pass\n";
+  }
+   {
+    std::vector<char> a;
+    std::vector<int> b;
+    std::vector<std::string> c;
+    assert(a.max_size() == std::allocator<char>().max_size() / 2);
+    assert(b.max_size() == std::allocator<int>().max_size());
+    assert(c.max_size() == std::allocator<std::string>().max_size());
+    std::cout << "testing max_size() method :: pass\n";
+  }
+  {
+    std::vector<int> vec;
+    vec.push_back(1);
+    vec.push_back(2);
+    vec.push_back(3);
+    std::vector<int> vec2(vec.begin(), vec.end());
+    assert(vec[0] == vec2[0]);
+    assert(vec[1] == vec2[1]);
+    assert(vec[2] == vec2[2]);
+  }
+  {
+    std::list<int> lst;
+    lst.push_back(1);
+    lst.push_back(2);
+    lst.push_back(3);
+    std::vector<int> vec2(lst.begin(), lst.end());
+    assert(lst.back() == vec2[2]);
+    lst.pop_back();
+    assert(lst.back() == vec2[1]);
+    lst.pop_back();
+    assert(lst.back() == vec2[0]);
+    std::cout << "testing range constructor :: pass\n";
+  }
+  {
+    std::vector<int> vec;
+    vec.push_back(5);
+    vec.push_back(6);
+    std::vector<int>::iterator b = vec.begin();
+    std::vector<int>::iterator e = vec.end();
+    assert(vec[0] == *b);
+    assert(vec[1] == *(b + 1));
+    assert(vec[0] == b[0]);
+    assert(vec[1] == b[1]);
+    assert(vec[1] == *(e - 1));
+    assert(vec[0] == *(e - 2));
+    std::cout << "testing range constructor :: pass\n";
+  }
+    {
+    std::vector<int> x;
+    x.push_back(0);
+    x.push_back(1);
+    x.push_back(2);
+    x.push_back(3);
+    std::vector<int>::iterator b = x.begin();
+    std::vector<int>::iterator e = x.end();
+    for (int i = 0;i < x.size();++i) {
+      assert(b[i] == x[i]);
+    }
+    int index = 0;
+    for (std::vector<int>::iterator i = b;i < e;++i) {
+      assert(x[index] == *i);
+      index++;
+    }
+    int rindex = x.size();
+    for (std::vector<int>::iterator i = e;e != i;--i) {
+      rindex--;
+      assert(x[rindex] == *i);
+    }
+    std::cout << "testing operator[] overloading in vectorIterator :: pass\n";
+    std::cout << "testing operator== overloading in vectorIterator :: pass\n";
+    std::cout << "testing operator< overloading in vectorIterator :: pass\n";
+    std::cout << "testing operator++ pre overloading in vectorIterator :: pass\n";
+    std::cout << "testing operator-- pre overloading in vectorIterator :: pass\n";
+    std::cout << "testing operator- pre overloading in vectorIterator :: pass\n";
+    std::cout << "testing operator+ pre overloading in vectorIterator :: pass\n";
+    assert(*(b++)== x[0]);
+    assert(*b == x[1]);
+    assert(*(b--) == x[1]);
+    assert(*b == x[0]);
+    std::cout << "testing operator++ post overloading in vectorIterator :: pass\n";
+    std::cout << "testing operator-- post overloading in vectorIterator :: pass\n";
   }
 
   std::cerr << "all passed\n";
