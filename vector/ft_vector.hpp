@@ -1,6 +1,7 @@
 #pragma once
 #include "../helper.hpp"
 #include "ft_vectorIterator.hpp"
+#include <assert.h>
 #include <iostream>
 
 namespace ft {
@@ -14,12 +15,12 @@ public:
   typedef typename allocator_type::const_reference const_reference;
 
   typedef ft::vectorIterator<Type> iterator;
-  typedef const iterator const_iterator;
+  typedef ft::vectorIterator<const Type> const_iterator;
 
   // Error handling ::
-  static_assert(
-      std::is_same<value_type, typename allocator_type::value_type>::value,
-      "Incompatible type between the allocator and the class type");
+  // static_assert(
+  //     std::is_same<value_type, typename allocator_type::value_type>::value,
+  //     "Incompatible type between the allocator and the class type");
 
   // Constructors ::
   explicit vector(const allocator_type &alloc = allocator_type())
@@ -35,15 +36,16 @@ public:
     } catch (std::length_error &e) {
       throw std::length_error("vector");
     }
-    for (std::size_t i = 0; i < _capacity; i++) {
+    for (size_type i = 0; i < _capacity; ++i) {
       _array[i] = val;
     }
   };
 
   // Todo range constructor
   template <class InputIterator>
-  vector(typename ft::enable_if<InputIterator, std::is_class<InputIterator>::value>::type first, InputIterator last,
-         const allocator_type &alloc = allocator_type())
+  vector(typename ft::enable_if<
+             InputIterator, std::is_class<InputIterator>::value>::type first,
+         InputIterator last, const allocator_type &alloc = allocator_type())
       : _array(NULL), _capacity(0), _size(0) {
     for (InputIterator iter = first; iter != last; ++iter) {
       push_back(*iter);
@@ -140,8 +142,38 @@ public:
   reference back() { return _array[_size - 1]; };
   const_reference back() const { return _array[_size - 1]; };
   //  Modifiers ::
-  // template <class InputIterator>
-  // void assign(InputIterator first, InputIterator last);
+  template <class InputIterator>
+  void assign(
+      typename ft::enable_if<InputIterator,
+                             std::is_class<InputIterator>::value>::type first,
+      InputIterator last) {
+    size_type index = 0;
+    size_type len = 0;
+    for (InputIterator iter = first; iter != last; ++iter) {
+      ++len;
+    }
+    if (len < _capacity) {
+      for (InputIterator iter = first; iter != last; ++iter) {
+        while (index < _size)
+          _alloc.destroy(_array + index);
+        _array[index] = *iter;
+        ++index;
+      }
+      if (index >= _size)
+        _size = len;
+    } else {
+      for (size_type i = 0; i < _size; i++)
+        _alloc.destroy(_array + i);
+      _alloc.deallocate(_array, _capacity);
+      _array = _alloc.allocate(len);
+      index = 0;
+      for (InputIterator iter = first; iter != last; ++iter) {
+        _array[index] = *iter;
+        ++index;
+      }
+      _capacity = _size = len;
+    }
+  };
   void assign(size_type n, const value_type &val) {
     if (_capacity >= n) {
       for (int i = 0; i < n; ++i) {
@@ -207,8 +239,6 @@ public:
   // void insert (iterator position, InputIterator first, InputIterator last);
   // iterator erase (iterator position);
   // iterator erase (iterator first, iterator last);
-  // template <class... Args>
-  // iterator emplace (const_iterator position, Args&&... args);
   // to do
 
   // Allocator
@@ -216,7 +246,9 @@ public:
 
   // iterator
   iterator begin() { return iterator(_array); };
+  // const_iterator begin() const { return iterator(_array); };
   iterator end() { return iterator(_array + _size); };
+  // const_iterator end() const { return iterator(_array + _size); };
   // Attributes ::
 private:
   value_type *_array;

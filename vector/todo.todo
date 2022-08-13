@@ -1,4 +1,5 @@
 # todo
+- [] fix the segfault when fill constructing std::string
 - [] try to raplace is_same
 - [] try to raplace static_assert
 - [] find a better fix for max_size() for T = char

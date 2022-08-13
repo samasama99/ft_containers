@@ -356,7 +356,8 @@ int main() {
     assert(vec[0] == *(e - 2));
     std::cout << "testing range constructor :: pass\n";
   }
-    {
+ 
+  {
     std::vector<int> x;
     x.push_back(0);
     x.push_back(1);
@@ -364,32 +365,217 @@ int main() {
     x.push_back(3);
     std::vector<int>::iterator b = x.begin();
     std::vector<int>::iterator e = x.end();
-    for (int i = 0;i < x.size();++i) {
+    for (int i = 0; i < x.size(); ++i) {
       assert(b[i] == x[i]);
     }
     int index = 0;
-    for (std::vector<int>::iterator i = b;i < e;++i) {
+    for (std::vector<int>::iterator i = b; i < e; ++i) {
       assert(x[index] == *i);
       index++;
     }
     int rindex = x.size();
-    for (std::vector<int>::iterator i = e;e != i;--i) {
+    for (std::vector<int>::iterator i = e; e != i; --i) {
       rindex--;
       assert(x[rindex] == *i);
     }
+
+    std::vector<int>::iterator b2 = x.begin();
+    std::vector<int>::iterator e2 = x.end();
+    b2 += 2;
+    assert(b2 == b + 2 && *b2 == b[2]);
+    e2 -= 2;
+    assert(e2 == e - 2 && *e2 == *(e - 2));
+    b2 -= 1;
+    assert(b2 == b + 1 && *b2 == b[1]);
+    std::cout << "testing operator+= overloading in vectorIterator :: pass\n";
+    std::cout << "testing operator-= overloading in vectorIterator :: pass\n";
     std::cout << "testing operator[] overloading in vectorIterator :: pass\n";
     std::cout << "testing operator== overloading in vectorIterator :: pass\n";
     std::cout << "testing operator< overloading in vectorIterator :: pass\n";
-    std::cout << "testing operator++ pre overloading in vectorIterator :: pass\n";
-    std::cout << "testing operator-- pre overloading in vectorIterator :: pass\n";
-    std::cout << "testing operator- pre overloading in vectorIterator :: pass\n";
-    std::cout << "testing operator+ pre overloading in vectorIterator :: pass\n";
-    assert(*(b++)== x[0]);
+    std::cout
+        << "testing operator++ pre overloading in vectorIterator :: pass\n";
+    std::cout
+        << "testing operator-- pre overloading in vectorIterator :: pass\n";
+    std::cout
+        << "testing operator- pre overloading in vectorIterator :: pass\n";
+    std::cout
+        << "testing operator+ pre overloading in vectorIterator :: pass\n";
+    assert(*(b++) == x[0]);
     assert(*b == x[1]);
     assert(*(b--) == x[1]);
     assert(*b == x[0]);
-    std::cout << "testing operator++ post overloading in vectorIterator :: pass\n";
-    std::cout << "testing operator-- post overloading in vectorIterator :: pass\n";
+    std::cout
+        << "testing operator++ post overloading in vectorIterator :: pass\n";
+    std::cout
+        << "testing operator-- post overloading in vectorIterator :: pass\n";
+  }
+  {
+    std::vector<std::string> vec;
+    vec.push_back("hello");
+    vec.push_back("hello");
+    vec.push_back("hello");
+    std::vector<std::string> vec2(vec.begin(), vec.end());
+    assert(vec[0] == vec2[0]);
+    assert(vec[1] == vec2[1]);
+    assert(vec[2] == vec2[2]);
+  }
+  {
+    std::list<std::string> lst;
+    lst.push_back("bye");
+    lst.push_back("bye");
+    lst.push_back("bye");
+    std::vector<std::string> vec2(lst.begin(), lst.end());
+    assert(lst.back() == vec2[2]);
+    lst.pop_back();
+    assert(lst.back() == vec2[1]);
+    lst.pop_back();
+    assert(lst.back() == vec2[0]);
+  }
+  {
+    std::vector<std::string> vec;
+    vec.push_back("test");
+    vec.push_back("test");
+    std::vector<std::string>::iterator b = vec.begin();
+    std::vector<std::string>::iterator e = vec.end();
+
+    assert(vec[0] == *b);
+    assert(vec[1] == *(b + 1));
+    assert(vec[0] == b[0]);
+    assert(vec[1] == b[1]);
+
+    assert(vec[1] == *(e - 1));
+    assert(vec[0] == *(e - 2));
+  }
+  {
+    std::vector<std::string> x;
+    x.push_back("what??");
+    x.push_back("what??");
+    x.push_back("what??");
+    x.push_back("what??");
+    std::vector<std::string>::iterator b = x.begin();
+    std::vector<std::string>::iterator e = x.end();
+    for (int i = 0; i < x.size(); ++i) {
+      assert(b[i] == x[i]);
+    }
+    int index = 0;
+    for (std::vector<std::string>::iterator i = b; i < e; ++i) {
+      assert(x[index] == *i);
+      index++;
+    }
+    int rindex = x.size();
+    for (std::vector<std::string>::iterator i = e; e != i; --i) {
+      rindex--;
+      assert(x[rindex] == *i);
+    }
+    assert(*(b++) == x[0]);
+    assert(*b == x[1]);
+    assert(*(b--) == x[1]);
+    assert(*b == x[0]);
+    std::cout << "the same iterator tests with std:string :: pass\n";
+  }
+  {
+    std::vector<int> vec;
+    vec.push_back(5);
+    vec.push_back(6);
+    std::vector<int>::const_iterator b = vec.begin();
+    std::vector<int>::const_iterator e = vec.end();
+
+    assert(vec[0] == *b);
+    assert(vec[1] == *(b + 1));
+    assert(vec[0] == b[0]);
+    assert(vec[1] == b[1]);
+
+    assert(vec[1] == *(e - 1));
+    assert(vec[0] == *(e - 2));
+    std::cout << "testing end() begin() :: pass\n";
+  }
+  {
+    std::vector<int> x;
+    x.push_back(0);
+    x.push_back(1);
+    x.push_back(2);
+    x.push_back(3);
+    std::vector<int>::const_iterator b = x.begin();
+    std::vector<int>::const_iterator e = x.end();
+    for (int i = 0; i < x.size(); ++i) {
+      assert(b[i] == x[i]);
+    }
+    int index = 0;
+    for (std::vector<int>::const_iterator i = b; i < e; ++i) {
+      assert(x[index] == *i);
+      index++;
+    }
+    int rindex = x.size();
+    for (std::vector<int>::const_iterator i = e; e != i; --i) {
+      rindex--;
+      assert(x[rindex] == *i);
+    }
+
+    std::vector<int>::const_iterator b2 = x.begin();
+    std::vector<int>::const_iterator e2 = x.end();
+    b2 += 2;
+    assert(b2 == b + 2 && *b2 == b[2]);
+    e2 -= 2;
+    assert(e2 == e - 2 && *e2 == *(e - 2));
+    b2 -= 1;
+    assert(b2 == b + 1 && *b2 == b[1]);
+    std::cout << "testing operator+= overloading in vectorIterator :: pass\n";
+    std::cout << "testing operator-= overloading in vectorIterator :: pass\n";
+    std::cout << "testing operator[] overloading in vectorIterator :: pass\n";
+    std::cout << "testing operator== overloading in vectorIterator :: pass\n";
+    std::cout << "testing operator< overloading in vectorIterator :: pass\n";
+    std::cout
+        << "testing operator++ pre overloading in vectorIterator :: pass\n";
+    std::cout
+        << "testing operator-- pre overloading in vectorIterator :: pass\n";
+    std::cout
+        << "testing operator- pre overloading in vectorIterator :: pass\n";
+    std::cout
+        << "testing operator+ pre overloading in vectorIterator :: pass\n";
+    assert(*(b++) == x[0]);
+    assert(*b == x[1]);
+    assert(*(b--) == x[1]);
+    assert(*b == x[0]);
+    std::cout
+        << "testing operator++ post overloading in vectorIterator :: pass\n";
+    std::cout
+        << "testing operator-- post overloading in vectorIterator :: pass\n";
+  }
+  {
+    std::vector<int> x;
+    x.push_back(10);
+    x.push_back(10);
+    std::vector<int> c;
+    c.assign(x.begin(), x.end());
+    assert(c.size() == 2 && c.capacity() == 2);
+    assert(c.at(0) == 10 && c.at(1) == 10);
+  }
+  {
+    std::vector<std::string> vec;
+    vec.push_back("hello");
+    vec.push_back("hello");
+    vec.push_back("hello");
+    std::vector<std::string> vec2;
+    vec2.assign(vec.begin(), vec.end());
+    assert(vec2.capacity() == 3 && vec2.size() == 3);
+    assert(vec[0] == vec2[0]);
+    assert(vec[1] == vec2[1]);
+    assert(vec[2] == vec2[2]);
+  }
+  {
+    std::list<std::string> lst;
+    lst.push_back("bye");
+    lst.push_back("bye");
+    lst.push_back("bye");
+    std::vector<std::string> vec2;
+    vec2.assign(lst.begin(), lst.end());
+    assert(vec2.capacity() == 3 && vec2.size() == 3);
+    assert(lst.back() == vec2[2]);
+    lst.pop_back();
+    assert(lst.back() == vec2[1]);
+    lst.pop_back();
+    assert(lst.back() == vec2[0]);
+    std::cout << "testing assign() template :: pass\n";
   }
 
   std::cerr << "all passed\n";
