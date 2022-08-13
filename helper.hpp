@@ -30,7 +30,6 @@ template <class Iter> struct iterator_traits {
 
 template <class T> struct iterator_traits<T *> {
   typedef ptrdiff_t difference_type;
-  // typedef typename std::remove_cv<T>::type value_type;
   typedef T value_type;
   typedef T *pointer;
   typedef T &reference;
