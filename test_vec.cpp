@@ -474,57 +474,57 @@ int main() {
     assert(*b == x[0]);
     std::cout << "the same iterator tests with std:string :: pass\n";
   }
-  // {
-  //   ft::vector<int> vec;
-  //   vec.push_back(5);
-  //   vec.push_back(6);
-  //   ft::vector<int>::const_iterator b = vec.begin();
-  //   ft::vector<int>::const_iterator e = vec.end();
+  {
+    ft::vector<int> vec;
+    vec.push_back(5);
+    vec.push_back(6);
+    ft::vector<int>::const_iterator b = vec.begin();
+    ft::vector<int>::const_iterator e = vec.end();
 
-  //   assert(vec[0] == *b);
-  //   assert(vec[1] == *(b + 1));
-  //   assert(vec[0] == b[0]);
-  //   assert(vec[1] == b[1]);
+    assert(vec[0] == *b);
+    assert(vec[1] == *(b + 1));
+    assert(vec[0] == b[0]);
+    assert(vec[1] == b[1]);
 
-  //   assert(vec[1] == *(e - 1));
-  //   assert(vec[0] == *(e - 2));
-  // }
-  // {
-  //   ft::vector<int> x;
-  //   x.push_back(0);
-  //   x.push_back(1);
-  //   x.push_back(2);
-  //   x.push_back(3);
-  //   ft::vector<int>::const_iterator b = x.begin();
-  //   ft::vector<int>::const_iterator e = x.end();
-  //   for (int i = 0; i < x.size(); ++i) {
-  //     assert(b[i] == x[i]);
-  //   }
-  //   int index = 0;
-  //   for (ft::vector<int>::const_iterator i = b; i < e; ++i) {
-  //     assert(x[index] == *i);
-  //     index++;
-  //   }
-  //   int rindex = x.size();
-  //   for (ft::vector<int>::const_iterator i = e; e != i; --i) {
-  //     rindex--;
-  //     assert(x[rindex] == *i);
-  //   }
+    assert(vec[1] == *(e - 1));
+    assert(vec[0] == *(e - 2));
+  }
+  {
+    ft::vector<int> x;
+    x.push_back(0);
+    x.push_back(1);
+    x.push_back(2);
+    x.push_back(3);
+    ft::vector<int>::const_iterator b = x.begin();
+    ft::vector<int>::const_iterator e = x.end();
+    for (int i = 0; i < x.size(); ++i) {
+      assert(b[i] == x[i]);
+    }
+    int index = 0;
+    for (ft::vector<int>::const_iterator i = b; i < e; ++i) {
+      assert(x[index] == *i);
+      index++;
+    }
+    int rindex = x.size();
+    for (ft::vector<int>::const_iterator i = e; e != i; --i) {
+      rindex--;
+      assert(x[rindex] == *i);
+    }
 
-  //   ft::vector<int>::const_iterator b2 = x.begin();
-  //   ft::vector<int>::const_iterator e2 = x.end();
-  //   b2 += 2;
-  //   assert(b2 == b + 2 && *b2 == b[2]);
-  //   e2 -= 2;
-  //   assert(e2 == e - 2 && *e2 == *(e - 2));
-  //   b2 -= 1;
-  //   assert(b2 == b + 1 && *b2 == b[1]);
-  //   assert(*(b++) == x[0]);
-  //   assert(*b == x[1]);
-  //   assert(*(b--) == x[1]);
-  //   assert(*b == x[0]);
-  //   std::cout << "the same iterator tests with const_iterator :: pass\n";
-  // }
+    ft::vector<int>::const_iterator b2 = x.begin();
+    ft::vector<int>::const_iterator e2 = x.end();
+    b2 += 2;
+    assert(b2 == b + 2 && *b2 == b[2]);
+    e2 -= 2;
+    assert(e2 == e - 2 && *e2 == *(e - 2));
+    b2 -= 1;
+    assert(b2 == b + 1 && *b2 == b[1]);
+    assert(*(b++) == x[0]);
+    assert(*b == x[1]);
+    assert(*(b--) == x[1]);
+    assert(*b == x[0]);
+    std::cout << "the same iterator tests with const_iterator :: pass\n";
+  }
   {
     ft::vector<int> x;
     x.push_back(10);
