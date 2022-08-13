@@ -1,6 +1,7 @@
 #pragma once
 
 /////// INCLUDES ///////////
+#include <assert.h>
 #include <cstring>
 #include <exception>
 #include <iostream>
@@ -9,6 +10,9 @@
 #include <type_traits>
 
 namespace ft {
+  void todo() {
+    assert(true);
+  }  
 
 template <class Category, class T, class Distance = ptrdiff_t,
           class Pointer = T *, class Reference = T &>

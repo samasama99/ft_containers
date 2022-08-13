@@ -24,6 +24,8 @@ public:
     return *this;
   };
 
+  pointer base() {return p;};
+  const pointer base() const {return p;};
   bool operator==(const vectorIterator &src) const { return src.p == p; };
   bool operator!=(const vectorIterator &src) const { return !(src.p == p); };
 

@@ -1,8 +1,6 @@
 #pragma once
 #include "../helper.hpp"
 #include "ft_vectorIterator.hpp"
-#include <assert.h>
-#include <iostream>
 
 namespace ft {
 template <class Type, class Allocator = std::allocator<Type> > class vector {
@@ -18,9 +16,9 @@ public:
   typedef ft::vectorIterator<const Type> const_iterator;
 
   // Error handling ::
-  // static_assert(
-  //     std::is_same<value_type, typename allocator_type::value_type>::value,
-  //     "Incompatible type between the allocator and the class type");
+  static_assert(
+      (std::is_same<value_type, typename allocator_type::value_type>::value),
+      "Incompatible type between the allocator and the class type");
 
   // Constructors ::
   explicit vector(const allocator_type &alloc = allocator_type())
@@ -41,7 +39,6 @@ public:
     }
   };
 
-  // Todo range constructor
   template <class InputIterator>
   vector(typename ft::enable_if<
              InputIterator, std::is_class<InputIterator>::value>::type first,
@@ -51,7 +48,6 @@ public:
       push_back(*iter);
     }
   };
-  // Todo range constructor
   vector(const vector &x); // copy constructor
   // Destructor ::
   ~vector() {
@@ -120,7 +116,7 @@ public:
     value_type *tmp = _alloc.allocate(n);
     if (_array != NULL) {
       memset(tmp, 0, sizeof(value_type) * n);
-      memcpy(tmp, _array, _capacity);
+      memcpy(tmp, _array, sizeof(value_type) * _size);
       _alloc.deallocate(_array, _capacity);
     }
     _array = tmp;
@@ -232,23 +228,52 @@ public:
       --_size;
     }
   };
-  // to do
-  // iterator insert (iterator position, const value_type& val);
-  // void insert (iterator position, size_type n, const value_type& val);
+  // todo
+  iterator insert(iterator position, const value_type &val) {
+    if (position == NULL && _array == NULL) {
+      push_back(val);
+      return begin();
+    }
+    size_type index = 0;
+    for (iterator iter = begin(); iter != position; ++iter) {
+      ++index;
+    }
+    if (_size == _capacity)
+      reserve(_capacity + 1);
+    for (size_type i = size() - 1; i != (index - 1); --i) {
+      _array[i + 1] = _array[i];
+    }
+    _array[index] = val;
+    ++_size;
+    return position - 1;
+  };
+
+  void insert(iterator position, size_type n, const value_type &val) {
+    if (_array == NULL && position == NULL) {
+      push_back(val);
+      --n;
+      position = end();
+    }
+    size_type len = position.base() - _array;
+    for (size_type i = 0; i < n; ++i) {
+      iterator v = begin() + len;
+      insert(v, val);
+    }
+  };
   // template <class InputIterator>
-  // void insert (iterator position, InputIterator first, InputIterator last);
-  // iterator erase (iterator position);
-  // iterator erase (iterator first, iterator last);
-  // to do
+  // void insert(iterator position, InputIterator first, InputIterator last);
+  // iterator erase(iterator position);
+  // iterator erase(iterator first, iterator last);
+  // todo
 
   // Allocator
   allocator_type get_allocator() const { return _alloc; };
 
   // iterator
   iterator begin() { return iterator(_array); };
-  // const_iterator begin() const { return iterator(_array); };
+  const_iterator begin() const { return iterator(_array); };
   iterator end() { return iterator(_array + _size); };
-  // const_iterator end() const { return iterator(_array + _size); };
+  const_iterator end() const { return iterator(_array + _size); };
   // Attributes ::
 private:
   value_type *_array;
