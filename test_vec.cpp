@@ -36,16 +36,15 @@ int main() {
     assert(x[4] == 5);
     std::cout << "testing [] overloading 1 :: pass\n";
   }
-  // {
-  //   ft::vector<std::string> s(3, std::string("hello"));
-  //   s[0] = "hello";
-  //   s[1] = "oussama";
-  //   s[2] = "world";
-  //   assert(s[0] == "hello");
-  //   assert(s[1] == "oussama");
-  //   assert(s[2] == "world");
-  //   std::cout << "testing [] overloading 2 :: pass\n";
-  // }
+  {
+    std::vector<std::string> s(3, std::string("hello"));
+    s[1] = "oussama";
+    s[2] = "world";
+    assert(s[0] == "hello");
+    assert(s[1] == "oussama");
+    assert(s[2] == "world");
+    std::cout << "testing [] overloading 2 :: pass\n";
+  }
   {
     ft::vector<char> x(5, 'c');
     x[0] = 'x';
