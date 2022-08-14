@@ -35,14 +35,14 @@ int main() {
     std::cout << "testing [] overloading 1 :: pass\n";
   }
   {
-    std::vector<std::string> s(3);
-    s[0] = "hello";
-    s[1] = "oussama";
-    s[2] = "world";
-    assert(s[0] == "hello");
-    assert(s[1] == "oussama");
-    assert(s[2] == "world");
-    std::cout << "testing [] overloading 2 :: pass\n";
+    // std::vector<std::string> s(3);
+    // s[0] = "hello";
+    // s[1] = "oussama";
+    // s[2] = "world";
+    // assert(s[0] == "hello");
+    // assert(s[1] == "oussama");
+    // assert(s[2] == "world");
+    // std::cout << "testing [] overloading 2 :: pass\n";
   }
   {
     std::vector<char> x(5, 'c');

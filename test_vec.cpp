@@ -36,16 +36,16 @@ int main() {
     assert(x[4] == 5);
     std::cout << "testing [] overloading 1 :: pass\n";
   }
-  {
-    ft::vector<std::string> s(3);
-    s[0] = "hello";
-    s[1] = "oussama";
-    s[2] = "world";
-    assert(s[0] == "hello");
-    assert(s[1] == "oussama");
-    assert(s[2] == "world");
-    std::cout << "testing [] overloading 2 :: pass\n";
-  }
+  // {
+  //   ft::vector<std::string> s(3, std::string("hello"));
+  //   s[0] = "hello";
+  //   s[1] = "oussama";
+  //   s[2] = "world";
+  //   assert(s[0] == "hello");
+  //   assert(s[1] == "oussama");
+  //   assert(s[2] == "world");
+  //   std::cout << "testing [] overloading 2 :: pass\n";
+  // }
   {
     ft::vector<char> x(5, 'c');
     x[0] = 'x';
@@ -604,10 +604,6 @@ int main() {
     v.push_back(2);
     v.push_back(4);
     v.insert(v.begin() + 2, 3);
-    std::cerr << x[0] << '\n';
-    std::cerr << x[1] << '\n';
-    std::cerr << x[2] << '\n';
-    std::cerr << x[3] << '\n';
     assert(x[0] == v[0]);
     assert(x[1] == v[1]);
     assert(x[2] == v[2]);
@@ -623,10 +619,6 @@ int main() {
     v.push_back(1);
     v.push_back(2);
     v.insert(v.end(), 2, 3);
-    std::cerr << x[0] << '\n';
-    std::cerr << x[1] << '\n';
-    std::cerr << x[2] << '\n';
-    std::cerr << x[3] << '\n';
     assert(x[0] == v[0]);
     assert(x[1] == v[1]);
     assert(x[2] == v[2]);
@@ -675,6 +667,217 @@ int main() {
     assert(x[5] == v[5]);
     assert(x[6] == v[6]);
     std::cerr << "testing insert(postion, n, val) :: pass\n";
+  }
+  {
+    std::vector<int> v;
+    v.push_back(1);
+    v.push_back(2);
+    ft::vector<int> x;
+    x.push_back(1);
+    x.push_back(2);
+    x.insert(x.end(), v.begin(), v.end());
+    assert(x[0] == 1);
+    assert(x[1] == 2);
+    assert(x[2] == 1);
+    assert(x[3] == 2);
+  }
+  {
+    std::vector<int> v;
+    v.insert(v.end(), 6, 3);
+    ft::vector<int> x;
+    x.insert(x.end(), v.begin(), v.end());
+    assert(x[0] == v[0]);
+    assert(x[1] == v[1]);
+    assert(x[2] == v[2]);
+    assert(x[3] == v[3]);
+    assert(x[4] == v[4]);
+    assert(x[5] == v[5]);
+  }
+  {
+    std::vector<int> v;
+    v.insert(v.begin(), 6, 3);
+    ft::vector<int> x;
+    x.insert(x.end(), v.begin(), v.end());
+    assert(x[0] == v[0]);
+    assert(x[1] == v[1]);
+    assert(x[2] == v[2]);
+    assert(x[3] == v[3]);
+    assert(x[4] == v[4]);
+    assert(x[5] == v[5]);
+  }
+  {
+    std::vector<int> v;
+    v.push_back(3);
+    v.push_back(3);
+    v.push_back(3);
+    ft::vector<int> x;
+    x.push_back(1);
+    x.push_back(2);
+    x.push_back(4);
+    x.insert(x.begin() + 2, v.begin(), v.end());
+    assert(x[0] == 1);
+    assert(x[1] == 2);
+    assert(x[2] == 3);
+    assert(x[3] == 3);
+    assert(x[4] == 3);
+    assert(x[5] == 4);
+  }
+  {
+    ft::vector<int> v;
+    v.push_back(1);
+    v.push_back(2);
+    ft::vector<int> x;
+    x.push_back(1);
+    x.push_back(2);
+    x.insert(x.end(), v.begin(), v.end());
+    assert(x[0] == 1);
+    assert(x[1] == 2);
+    assert(x[2] == 1);
+    assert(x[3] == 2);
+  }
+  {
+    ft::vector<int> v;
+    v.insert(v.end(), 6, 3);
+    ft::vector<int> x;
+    x.insert(x.end(), v.begin(), v.end());
+    assert(x[0] == v[0]);
+    assert(x[1] == v[1]);
+    assert(x[2] == v[2]);
+    assert(x[3] == v[3]);
+    assert(x[4] == v[4]);
+    assert(x[5] == v[5]);
+  }
+  {
+    ft::vector<int> v;
+    v.insert(v.begin(), 6, 3);
+    ft::vector<int> x;
+    x.insert(x.end(), v.begin(), v.end());
+    assert(x[0] == v[0]);
+    assert(x[1] == v[1]);
+    assert(x[2] == v[2]);
+    assert(x[3] == v[3]);
+    assert(x[4] == v[4]);
+    assert(x[5] == v[5]);
+  }
+  {
+    ft::vector<int> v;
+    v.push_back(3);
+    v.push_back(3);
+    v.push_back(3);
+    ft::vector<int> x;
+    x.push_back(1);
+    x.push_back(2);
+    x.push_back(4);
+    x.insert(x.begin() + 2, v.begin(), v.end());
+    assert(x[0] == 1);
+    assert(x[1] == 2);
+    assert(x[2] == 3);
+    assert(x[3] == 3);
+    assert(x[4] == 3);
+    assert(x[5] == 4);
+    std::cerr << "testing range insert() :: pass\n";
+  }
+  {
+    std::vector<int> x;
+    x.push_back(10);
+    x.push_back(20);
+    std::vector<int>::iterator i1 = x.erase(x.begin());
+    ft::vector<int> m;
+    m.push_back(10);
+    m.push_back(20);
+    ft::vector<int>::iterator i2 = m.erase(m.begin());
+    assert(x.capacity() == m.capacity());
+    assert(x.size() == m.size());
+    assert(x[0] == m[0]);
+    assert(i1 == x.begin());
+    assert(i2 == m.begin());
+  }
+  {
+    std::vector<int> x;
+    x.push_back(10);
+    x.push_back(20);
+    std::vector<int>::iterator i1 = x.erase(x.end() - 1);
+    ft::vector<int> m;
+    m.push_back(10);
+    m.push_back(20);
+    ft::vector<int>::iterator i2 = m.erase(m.end() - 1);
+    assert(x.capacity() == m.capacity());
+    assert(x.size() == m.size());
+    assert(x[0] == m[0]);
+    assert(i1 == (x.end()));
+    assert(i2 == (m.end()));
+  }
+  {
+    std::vector<int> x;
+    x.push_back(10);
+    x.push_back(20);
+    x.push_back(30);
+    x.push_back(40);
+    std::vector<int>::iterator i1 = x.erase(x.begin() + 2);
+    ft::vector<int> m;
+    m.push_back(10);
+    m.push_back(20);
+    m.push_back(30);
+    m.push_back(40);
+    ft::vector<int>::iterator i2 = m.erase(m.begin() + 2);
+    assert(x.capacity() == m.capacity());
+    assert(x.size() == m.size());
+    assert(x[0] == m[0]);
+    assert(x[1] == m[1]);
+    assert(x[2] == m[2]);
+    assert(i1 == (x.begin() + 2));
+    assert(i2 == (m.begin() + 2));
+    std::cerr << "testing erase() :: pass\n";
+  }
+  {
+    std::vector<int> x;
+    x.push_back(10);
+    x.push_back(20);
+    std::vector<int>::iterator i1 = x.erase(x.begin(), x.end());
+    ft::vector<int> m;
+    m.push_back(10);
+    m.push_back(20);
+    ft::vector<int>::iterator i2 = m.erase(m.begin(), m.end());
+    assert(x.capacity() == m.capacity());
+    assert(x.size() == m.size());
+    assert(i1 == x.end());
+    assert(i2 == m.end());
+  }
+  {
+    std::vector<int> x;
+    x.push_back(10);
+    x.push_back(20);
+    std::vector<int>::iterator i1 = x.erase(x.end() - 1, x.end());
+    ft::vector<int> m;
+    m.push_back(10);
+    m.push_back(20);
+    ft::vector<int>::iterator i2 = m.erase(m.end() - 1, m.end());
+    assert(x.capacity() == m.capacity());
+    assert(x.size() == m.size());
+    assert(x[0] == m[0]);
+    assert(i1 == x.end());
+    assert(i2 == m.end());
+  }
+  {
+    std::vector<int> x;
+    x.push_back(10);
+    x.push_back(20);
+    x.push_back(30);
+    x.push_back(40);
+    std::vector<int>::iterator i1 = x.erase(x.begin() + 1, x.begin() + 2);
+    ft::vector<int> m;
+    m.push_back(10);
+    m.push_back(20);
+    m.push_back(30);
+    m.push_back(40);
+    ft::vector<int>::iterator i2 = m.erase(m.begin() + 1, m.begin() + 2);
+    assert(x.capacity() == m.capacity());
+    assert(x.size() == m.size());
+    assert(x[0] == m[0]);
+    assert(x[1] == m[1]);
+    assert(i1 == x.begin() + 1);
+    assert(i2 == m.begin() + 1);
+    std::cerr << "testing range erase() :: pass\n";
   }
 
   std::cerr << "all passed\n";

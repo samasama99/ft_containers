@@ -34,7 +34,7 @@ public:
     } catch (std::length_error &e) {
       throw std::length_error("vector");
     }
-    for (size_type i = 0; i < _capacity; ++i) {
+    for (size_type i = 0; i < n; ++i) {
       _array[i] = val;
     }
   };
@@ -228,7 +228,6 @@ public:
       --_size;
     }
   };
-  // todo
   iterator insert(iterator position, const value_type &val) {
     if (position == NULL && _array == NULL) {
       push_back(val);
@@ -260,10 +259,43 @@ public:
       insert(v, val);
     }
   };
-  // template <class InputIterator>
-  // void insert(iterator position, InputIterator first, InputIterator last);
-  // iterator erase(iterator position);
-  // iterator erase(iterator first, iterator last);
+
+  template <class InputIterator>
+  void insert(
+      iterator position,
+      typename ft::enable_if<InputIterator,
+                             std::is_class<InputIterator>::value>::type first,
+      InputIterator last) {
+    if (_array == NULL && position == NULL) {
+      push_back(*first);
+      ++first;
+      position = end();
+    }
+    size_type len = position.base() - _array;
+    while (last != first) {
+      iterator v = begin() + len;
+      insert(v, *first);
+      ++first;
+      ++len;
+    }
+  }
+  // todo
+  iterator erase(iterator position) {
+    size_type index = position.base() - begin().base();
+    _alloc.destroy(_array + index);
+    for (size_type i = index; i < _size - 1; ++i) {
+      _array[i] = _array[i + 1];
+    }
+    --_size;
+    return position;
+  };
+  iterator erase(iterator first, iterator last) {
+    while (first != last) {
+      erase(first);
+      --last;
+    }
+    return first;
+  };
   // todo
 
   // Allocator
