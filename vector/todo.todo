@@ -1,6 +1,7 @@
 # todo
+- [] test all methods with return value !!!!
 - [] fix the segfault when fill constructing std::string
-- [] try to raplace is_same
-- [] try to raplace static_assert
+- [] try to replace is_same
+- [] try to replace static_assert
 - [] find a better fix for max_size() for T = char
 - [x] make todo
