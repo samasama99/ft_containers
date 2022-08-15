@@ -13,6 +13,7 @@ public:
   typedef typename allocator_type::const_reference const_reference;
 
   typedef ft::vectorIterator<Type> iterator;
+  typedef ft::reverseVectorIterator<Type, iterator> reverse_iterator;
   typedef ft::vectorIterator<const Type> const_iterator;
 
   // ERROR HANDLING
@@ -233,7 +234,7 @@ public:
   }
 
   iterator erase(iterator position) {
-    size_type index = position.base() - begin().base();
+    size_type index = position.base() - _array;
     _alloc.destroy(_array + index);
     for (size_type i = index; i < _size - 1; ++i) {
       _array[i] = _array[i + 1];
@@ -258,6 +259,8 @@ public:
   const_iterator begin() const { return iterator(_array); };
   iterator end() { return iterator(_array + _size); };
   const_iterator end() const { return iterator(_array + _size); };
+  reverse_iterator rbegin() { return reverse_iterator(_array + _size); };
+  reverse_iterator rend() { return reverse_iterator(_array); };
   // Attributes
 private:
   value_type *_array;

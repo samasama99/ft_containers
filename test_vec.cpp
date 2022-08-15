@@ -878,7 +878,51 @@ int main() {
     assert(i2 == m.begin() + 1);
     std::cerr << "testing range erase() :: pass\n";
   }
-
+  {
+    ft::vector<int> x;
+    x.push_back(10);
+    x.push_back(20);
+    x.push_back(30);
+    ft::vector<int>::reverse_iterator i = x.rbegin();
+    assert(*x.rbegin() == *(x.end() - 1));
+    assert(*(x.rend() - 1) == *(x.begin()));
+    assert(*(x.rbegin()) == 30);
+    assert(*(x.rbegin() + 1) == 20);
+    assert(*(x.rbegin() + 2) == 10);
+    assert(*(x.rend() - 1) == 10);
+    assert(*(x.rend() - 2) == 20);
+    assert(*(x.rend() - 3) == 30);
+    std::cerr << "testing reverse_iterator [+, -], rbegin(), rend() :: pass\n";
+  }
+  {
+    ft::vector<int> x;
+    x.push_back(10);
+    x.push_back(20);
+    x.push_back(30);
+    ft::vector<int>::reverse_iterator i = x.rbegin();
+    assert(*(i++) == 30);
+    assert(*(i++) == 20);
+    assert(*(i++) == 10);
+    ft::vector<int>::reverse_iterator j = x.rend();
+    assert(*(--j) == 10);
+    assert(*(--j) == 20);
+    assert(*(--j) == 30);
+    std::cerr << "testing reverse_iterator [++, --] :: pass\n";
+  }
+  {
+    ft::vector<int> vec;
+    vec.push_back(1);
+    vec.push_back(2);
+    vec.push_back(3);
+    assert(vec.rbegin() < vec.rend());
+    assert(vec.rbegin() <= vec.rend());
+    assert(vec.rbegin() < vec.rbegin() + 1);
+    assert(vec.rend() < vec.rend() + 1);
+    assert(vec.rend() == vec.rend());
+    assert(vec.rbegin() + 2 == vec.rend() - 1);
+    assert(vec.rbegin().base() == (vec.end()));
+    assert((vec.rend()).base() == vec.begin());
+  }
   std::cerr << "all passed\n";
   system("leaks a.out");
 }
