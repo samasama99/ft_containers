@@ -1,6 +1,19 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_vector.hpp                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: orahmoun <orahmoun@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/08/15 10:41:59 by orahmoun          #+#    #+#             */
+/*   Updated: 2022/08/15 10:42:37 by orahmoun         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #pragma once
-#include "../helper.hpp"
 #include "ft_vectorIterator.hpp"
+#include "../includes.hpp"
+#include "../enable_if.hpp"
 
 namespace ft {
 template <class Type, class Allocator = std::allocator<Type> > class vector {

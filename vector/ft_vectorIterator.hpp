@@ -1,5 +1,17 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_vectorIterator.hpp                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: orahmoun <orahmoun@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/08/15 10:41:55 by orahmoun          #+#    #+#             */
+/*   Updated: 2022/08/15 10:41:57 by orahmoun         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #pragma once
-#include "../helper.hpp"
+#include "../iterators_traits.hpp"
 
 namespace ft {
 template <typename T> class vectorIterator {
