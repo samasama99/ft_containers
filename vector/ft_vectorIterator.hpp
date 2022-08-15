@@ -161,13 +161,13 @@ public:
 
   reverseVectorIterator operator++(int) { return base_iter--; }; // post
 
-  reverseVectorIterator operator++() { return --base_iter; }; // pre
+  reverseVectorIterator &operator++() { --base_iter; return *this;}; // pre
 
   reverseVectorIterator operator--(int) { return base_iter++; };
 
-  reverseVectorIterator operator--() {
-    return ++base_iter;
-    ;
+  reverseVectorIterator &operator--() {
+    ++base_iter;
+    return *this;
   };
 
   reverseVectorIterator operator-(const difference_type v) const {

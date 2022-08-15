@@ -325,7 +325,7 @@ int main() {
     ft::vector<char> a;
     ft::vector<int> b;
     ft::vector<std::string> c;
-    assert(a.max_size() == std::allocator<char>().max_size());
+    assert(a.max_size() == std::allocator<char>().max_size() / 2);
     assert(b.max_size() == std::allocator<int>().max_size());
     assert(c.max_size() == std::allocator<std::string>().max_size());
     std::cout << "testing max_size() method :: pass\n";
@@ -935,6 +935,56 @@ int main() {
     assert(vec.rbegin().base() == (vec.end()));
     assert((vec.rend()).base() == vec.begin());
   }
+  {
+    std::vector<int> vec;
+    std::vector<int> vec2;
+    vec.push_back(1);
+    vec.push_back(2);
+    vec.push_back(3);
+    vec2.push_back(1);
+    vec2.push_back(2);
+    vec2.push_back(3);
+    assert(vec == vec2);
+    assert(!(vec != vec2));
+  }
+  {
+    std::vector<int> vec;
+    std::vector<int> vec2;
+    vec.push_back(1);
+    vec.push_back(2);
+    vec.push_back(3);
+    vec2.push_back(1);
+    vec2.push_back(5);
+    vec2.push_back(3);
+    assert(vec == vec2 == false);
+    assert(vec != vec2);
+  }
+  {
+    std::vector<int> vec;
+    std::vector<int> vec2;
+    vec.push_back(1);
+    vec.push_back(2);
+    vec.push_back(3);
+    vec2.push_back(2);
+    vec2.push_back(3);
+    vec2.push_back(4);
+    assert((vec > vec2) == false);
+    assert((vec < vec2) == true);
+  }
+  {
+    std::vector<int> vec;
+    std::vector<int> vec2;
+    vec.push_back(1);
+    vec.push_back(1);
+    vec.push_back(3);
+    vec.push_back(3);
+    vec2.push_back(1);
+    vec2.push_back(1);
+    vec2.push_back(4);
+    assert((vec > vec2) == false);
+    assert((vec < vec2) == true);
+  }
+
   std::cerr << "all passed\n";
   system("leaks a.out");
 }

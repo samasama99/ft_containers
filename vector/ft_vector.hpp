@@ -11,9 +11,9 @@
 /* ************************************************************************** */
 
 #pragma once
-#include "ft_vectorIterator.hpp"
-#include "../includes.hpp"
 #include "../enable_if.hpp"
+#include "../includes.hpp"
+#include "ft_vectorIterator.hpp"
 
 namespace ft {
 template <class Type, class Allocator = std::allocator<Type> > class vector {
@@ -28,6 +28,7 @@ public:
   typedef ft::vectorIterator<Type> iterator;
   typedef ft::reverseVectorIterator<Type, iterator> reverse_iterator;
   typedef ft::vectorIterator<const Type> const_iterator;
+  typedef ft::reverseVectorIterator<const Type, iterator> const_reverse_iterator;
 
   // ERROR HANDLING
   static_assert(
@@ -100,7 +101,10 @@ public:
   // Capacity:
   size_type size() const { return _size; };
 
-  size_type max_size() const { return _alloc.max_size(); };
+  size_type max_size() const { 
+    if (std::is_same<value_type, char>::value)
+      return _alloc.max_size() / 2;
+    return _alloc.max_size(); };
 
   void resize(size_type n, value_type val = value_type()) {
     if (n < _size) {
@@ -281,4 +285,51 @@ private:
   size_type _capacity;
   allocator_type _alloc;
 };
+
+template <class T, class Alloc>
+bool operator==(const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs) {
+  if (lhs.size() != rhs.size())
+    return false;
+  for (ft::vector<int>::size_type i = 0; i < lhs.size(); i++)
+    if (lhs[i] != rhs[i])
+      return false;
+  return true;
+};
+
+template <class T, class Alloc>
+bool operator!=(const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs) {
+  return !(lhs == rhs);
+};
+
+template <class T, class Alloc>
+bool operator<(const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs) {
+  for (ft::vector<int>::size_type i = 0; i < std::min(lhs.size(), rhs.size());
+       i++)
+    if (lhs[i] >= rhs[i])
+      return false;
+};
+
+// template <class T, class Alloc>
+// bool operator<=(const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs) {
+//   for (ft::vector<int>::size_type i = 0; i < std::min(lhs.size(), rhs.size());
+//        i++)
+//     if (lhs[i] > rhs[i])
+//       return false;
+// };
+
+// template <class T, class Alloc>
+// bool operator>(const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs) {
+//   for (ft::vector<int>::size_type i = 0; i < std::min(lhs.size(), rhs.size());
+//        i++)
+//     if (lhs[i] <= rhs[i])
+//       return false;
+// };
+
+// template <class T, class Alloc>
+// bool operator>=(const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs) {
+//   for (ft::vector<int>::size_type i = 0; i < std::min(lhs.size(), rhs.size());
+//        i++)
+//     if (lhs[i] < rhs[i])
+//       return false;
+// };
 } // namespace ft

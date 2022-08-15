@@ -8,3 +8,4 @@
 - [] equal and/or lexicographical_compare
 - [] std::pair
 - [] std::make_pair
+- [] set
