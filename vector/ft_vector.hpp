@@ -15,6 +15,7 @@
 #include "../equal.hpp"
 #include "../includes.hpp"
 #include "../lexicographical_compare.hpp"
+#include "../is_same.hpp"
 #include "ft_vectorIterator.hpp"
 
 namespace ft {
@@ -35,7 +36,7 @@ public:
 
   // ERROR HANDLING
   static_assert(
-      (std::is_same<value_type, typename allocator_type::value_type>::value),
+      (ft::is_same<value_type, typename allocator_type::value_type>::value),
       "Incompatible type between the allocator and the class type");
 
 private:
