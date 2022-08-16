@@ -63,6 +63,8 @@ int main() {
     assert(p == p2 && p == p3);
     assert(!(p != p2) && !(p != p3));
     assert(!(p != p2) && !(p != p3));
+    p3.first = "a";
+    assert(p > p3);
     std::cout << "pair relational operators :: pass\n";
   }
   {
@@ -74,5 +76,6 @@ int main() {
     assert(xy.first.second == xy2.first.second);
     assert(xy.second.first == xy2.second.first);
     assert(xy.second.second == xy2.second.second);
+    std::cout << "make pair :: pass\n";
   }
 }

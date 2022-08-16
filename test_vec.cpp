@@ -936,8 +936,8 @@ int main() {
     assert((vec.rend()).base() == vec.begin());
   }
   {
-    std::vector<int> vec;
-    std::vector<int> vec2;
+    ft::vector<int> vec;
+    ft::vector<int> vec2;
     vec.push_back(1);
     vec.push_back(2);
     vec.push_back(3);
@@ -948,28 +948,40 @@ int main() {
     assert(!(vec != vec2));
   }
   {
-    std::vector<int> vec;
-    std::vector<int> vec2;
+    ft::vector<int> vec;
+    ft::vector<int> vec2;
+    vec.push_back(1);
+    vec.push_back(2);
+    vec.push_back(3);
+    vec2.push_back(1);
+    vec2.push_back(2);
+    vec2.push_back(3);
+    assert(vec >= vec2);
+    assert(vec <= vec2);
+  }
+  {
+    ft::vector<int> vec;
+    ft::vector<int> vec2;
     vec.push_back(1);
     vec.push_back(2);
     vec.push_back(3);
     vec2.push_back(1);
     vec2.push_back(5);
     vec2.push_back(3);
-    assert(vec == vec2 == false);
+    assert(!(vec == vec2));
     assert(vec != vec2);
   }
   {
-    std::vector<int> vec;
-    std::vector<int> vec2;
+    ft::vector<int> vec;
+    ft::vector<int> vec2;
     vec.push_back(1);
     vec.push_back(2);
     vec.push_back(3);
     vec2.push_back(2);
     vec2.push_back(3);
     vec2.push_back(4);
-    assert((vec > vec2) == false);
-    assert((vec < vec2) == true);
+    assert(!(vec > vec2));
+    assert((vec < vec2));
   }
   {
     std::vector<int> vec;
@@ -981,10 +993,23 @@ int main() {
     vec2.push_back(1);
     vec2.push_back(1);
     vec2.push_back(4);
-    assert((vec > vec2) == false);
-    assert((vec < vec2) == true);
+    assert(!(vec > vec2));
+    assert(vec < vec2);
   }
-
+  {
+    std::vector<int> vec;
+    std::vector<int> vec2;
+    vec.push_back(1);
+    vec.push_back(1);
+    vec.push_back(4);
+    vec2.push_back(1);
+    vec2.push_back(1);
+    vec2.push_back(3);
+    vec2.push_back(3);
+    assert(!(vec < vec2));
+    assert(vec > vec2);
+    std::cout << "pair relational operators :: pass\n";
+  }
   std::cerr << "all passed\n";
   system("leaks a.out");
 }
