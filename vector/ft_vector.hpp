@@ -53,11 +53,11 @@ private:
 public:
   // CONSTRUCTORS
   explicit vector(const allocator_type &alloc = allocator_type())
-      : _size(0), _capacity(0), _array(NULL), _alloc(allocator_type()) {}
+      : _array(NULL), _size(0), _capacity(0), _alloc(alloc) {}
 
   explicit vector(size_type n, const value_type &val = value_type(),
                   const allocator_type &alloc = allocator_type())
-      : _size(n), _capacity(n), _alloc(allocator_type()) {
+      : _array(NULL), _size(n), _capacity(n), _alloc(alloc) {
     _array = allocate(n);
     for (size_type i = 0; i < n; ++i) {
       _array[i] = val;
@@ -68,15 +68,14 @@ public:
   vector(typename ft::enable_if<
              InputIterator, std::is_class<InputIterator>::value>::type first,
          InputIterator last, const allocator_type &alloc = allocator_type())
-      : _array(NULL), _capacity(0), _size(0) {
+      : _array(NULL), _size(0), _capacity(0), _alloc(alloc) {
     for (InputIterator iter = first; iter != last; ++iter) {
       push_back(*iter);
     }
   };
 
   vector(const vector &src)
-      : _size(src.size()), _capacity(src.capacity()),
-        _alloc(src.get_allocator()) {
+      : _array(NULL), _size(src.size()), _capacity(src.capacity()) {
     *this = src;
   };
 
@@ -113,14 +112,14 @@ public:
 
   void resize(size_type n, value_type val = value_type()) {
     if (n < _size) {
-      for (int i = n; i < _size; ++i) {
+      for (size_t i = n; i < _size; ++i) {
         _alloc.destroy(_array + i);
         _size--;
       }
     } else if (n > _capacity) {
       reserve(n);
     }
-    for (int i = _size; i < n; ++i) {
+    for (size_t i = _size; i < n; ++i) {
       _array[i] = val;
       _size++;
     }
@@ -181,7 +180,7 @@ public:
 
   void push_back(const value_type &val) {
     if (_size == _capacity)
-      reserve(_capacity == 0 ? 1 : _capacity * 2);
+      reserve((_capacity == 0) ? 1 : (_capacity * 2));
     _array[_size++] = val;
   };
 
@@ -241,7 +240,7 @@ public:
       typename ft::enable_if<InputIterator,
                              std::is_class<InputIterator>::value>::type first,
       InputIterator last) {
-    if (_array == NULL && position == NULL) {
+    if (_array == NULL && position == NULL && first != last) {
       push_back(*first);
       ++first;
       position = end();

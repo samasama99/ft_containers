@@ -17,7 +17,7 @@ namespace ft {
 template <typename T> class vectorIterator {
 protected:
   T *p;
-  vectorIterator(const long t){};
+  vectorIterator(const long t) { (void)t; };
 
 public:
   typedef typename ft::iterator_traits<T *>::difference_type difference_type;
@@ -161,7 +161,10 @@ public:
 
   reverseVectorIterator operator++(int) { return base_iter--; }; // post
 
-  reverseVectorIterator &operator++() { --base_iter; return *this;}; // pre
+  reverseVectorIterator &operator++() {
+    --base_iter;
+    return *this;
+  }; // pre
 
   reverseVectorIterator operator--(int) { return base_iter++; };
 

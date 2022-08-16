@@ -85,6 +85,7 @@ int main() {
     std::cout << "testing at() method:: pass\n";
     try {
       char c = x.at(10);
+      (void)c;
     } catch (std::out_of_range &e) {
       std::cout << "testing at() method throwing error :: pass\n";
     }
@@ -382,7 +383,7 @@ int main() {
     x.push_back(3);
     ft::vector<int>::iterator b = x.begin();
     ft::vector<int>::iterator e = x.end();
-    for (int i = 0; i < x.size(); ++i) {
+    for (size_t i = 0; i < x.size(); ++i) {
       assert(b[i] == x[i]);
     }
     int index = 0;
@@ -471,7 +472,7 @@ int main() {
     x.push_back("what??");
     ft::vector<std::string>::iterator b = x.begin();
     ft::vector<std::string>::iterator e = x.end();
-    for (int i = 0; i < x.size(); ++i) {
+    for (size_t i = 0; i < x.size(); ++i) {
       assert(b[i] == x[i]);
     }
     int index = 0;
@@ -513,7 +514,7 @@ int main() {
     x.push_back(3);
     ft::vector<int>::const_iterator b = x.begin();
     ft::vector<int>::const_iterator e = x.end();
-    for (int i = 0; i < x.size(); ++i) {
+    for (size_t i = 0; i < x.size(); ++i) {
       assert(b[i] == x[i]);
     }
     int index = 0;
