@@ -984,8 +984,8 @@ int main() {
     assert((vec < vec2));
   }
   {
-    std::vector<int> vec;
-    std::vector<int> vec2;
+    ft::vector<int> vec;
+    ft::vector<int> vec2;
     vec.push_back(1);
     vec.push_back(1);
     vec.push_back(3);
@@ -997,8 +997,8 @@ int main() {
     assert(vec < vec2);
   }
   {
-    std::vector<int> vec;
-    std::vector<int> vec2;
+    ft::vector<int> vec;
+    ft::vector<int> vec2;
     vec.push_back(1);
     vec.push_back(1);
     vec.push_back(4);
