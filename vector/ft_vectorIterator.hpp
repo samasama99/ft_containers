@@ -27,7 +27,7 @@ public:
   typedef
       typename ft::iterator_traits<T *>::iterator_category iterator_category;
 
-  explicit vectorIterator() : p(NULL){};
+  explicit vectorIterator() : p(nullptr){};
 
   explicit vectorIterator(T *t) : p(t){};
 

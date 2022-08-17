@@ -356,8 +356,8 @@ int main() {
   }
   {
     ft::vector<std::string> vec;
-    assert(vec.begin() == NULL);
-    assert(vec.end() == NULL);
+    assert(vec.begin() == nullptr);
+    assert(vec.end() == nullptr);
   }
   {
     ft::vector<int> vec;

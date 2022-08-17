@@ -53,11 +53,11 @@ private:
 public:
   // CONSTRUCTORS
   explicit vector(const allocator_type &alloc = allocator_type())
-      : _array(NULL), _size(0), _capacity(0), _alloc(alloc) {}
+      : _array(nullptr), _size(0), _capacity(0), _alloc(alloc) {}
 
   explicit vector(size_type n, const value_type &val = value_type(),
                   const allocator_type &alloc = allocator_type())
-      : _array(NULL), _size(n), _capacity(n), _alloc(alloc) {
+      : _array(nullptr), _size(n), _capacity(n), _alloc(alloc) {
     _array = allocate(n);
     for (size_type i = 0; i < n; ++i) {
       _array[i] = val;
@@ -68,20 +68,20 @@ public:
   vector(typename ft::enable_if<
              InputIterator, std::is_class<InputIterator>::value>::type first,
          InputIterator last, const allocator_type &alloc = allocator_type())
-      : _array(NULL), _size(0), _capacity(0), _alloc(alloc) {
+      : _array(nullptr), _size(0), _capacity(0), _alloc(alloc) {
     for (InputIterator iter = first; iter != last; ++iter) {
       push_back(*iter);
     }
   };
 
   vector(const vector &src)
-      : _array(NULL), _size(src.size()), _capacity(src.capacity()) {
+      : _array(nullptr), _size(src.size()), _capacity(src.capacity()) {
     *this = src;
   };
 
   // DESTRUCTOR
   ~vector() {
-    if (_array == NULL)
+    if (_array == nullptr)
       return;
     clear();
     _alloc.deallocate(_array, _capacity);
@@ -133,7 +133,7 @@ public:
     if (n < _capacity)
       return;
     value_type *tmp = allocate(n);
-    if (_array != NULL) {
+    if (_array != nullptr) {
       memset(tmp, 0, sizeof(value_type) * n);
       memcpy(tmp, _array, sizeof(value_type) * _size);
       _alloc.deallocate(_array, _capacity);
@@ -186,7 +186,7 @@ public:
 
   void pop_back() {
     --_size;
-    if (_array == NULL)
+    if (_array == nullptr)
       return;
     _alloc.destroy(&_array[_size - 1]);
   };
@@ -206,7 +206,7 @@ public:
   };
 
   iterator insert(iterator position, const value_type &val) {
-    if (position == NULL && _array == NULL) {
+    if (position == nullptr && _array == nullptr) {
       push_back(val);
       return begin();
     }
@@ -222,7 +222,7 @@ public:
   };
 
   void insert(iterator position, size_type n, const value_type &val) {
-    if (_array == NULL && position == NULL) {
+    if (_array == nullptr && position == nullptr) {
       push_back(val);
       --n;
       position = end();
@@ -240,7 +240,7 @@ public:
       typename ft::enable_if<InputIterator,
                              std::is_class<InputIterator>::value>::type first,
       InputIterator last) {
-    if (_array == NULL && position == NULL && first != last) {
+    if (_array == nullptr && position == nullptr && first != last) {
       push_back(*first);
       ++first;
       position = end();
