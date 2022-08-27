@@ -14,27 +14,27 @@
 #include "../vector/ft_vector.hpp"
 
 namespace ft {
-template <class T, class Container = ft::vector<T> > class stack {
+template <class T, class Container = ft::vector<T> >
+class stack {
+   public:
+    typedef T value_type;
+    typedef Container container_type;
+    typedef std::size_t size_type;
 
-public:
-  typedef T value_type;
-  typedef Container container_type;
-  typedef std::size_t size_type;
+    static_assert(
+        (ft::is_same<value_type, typename Container::value_type>::value),
+        "Incompatible type between the container and the class type");
 
-  static_assert(
-      (ft::is_same<value_type, typename Container::value_type>::value),
-      "Incompatible type between the container and the class type");
+   public:
+    explicit stack(const container_type& c = container_type()) : con(c){};
+    bool empty() const { return con.empty(); };
+    size_type size() const { return con.size(); };
+    value_type& top() { return con.back(); };
+    const value_type& top() const { return con.back(); };
+    void push(const value_type& val) { con.push_back(val); };
+    void pop() { con.pop_back(); };
 
-public:
-  explicit stack(const container_type &c = container_type()) : con(c){};
-  bool empty() const { return con.empty(); };
-  size_type size() const { return con.size(); };
-  value_type &top() { return con.back(); };
-  const value_type &top() const { return con.back(); };
-  void push(const value_type &val) { con.push_back(val); };
-  void pop() { con.pop_back(); };
-
-private:
-  container_type con;
+   private:
+    container_type con;
 };
-} // namespace ft
+}  // namespace ft

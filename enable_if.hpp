@@ -13,11 +13,13 @@
 #pragma once
 
 namespace ft {
-template <typename T, bool> struct enable_if {
-  typedef void type;
+template <typename T, bool>
+struct enable_if {
+    typedef void type;
 };
 
-template <typename T> struct enable_if<T, true> {
-  typedef T type;
+template <typename T>
+struct enable_if<T, true> {
+    typedef T type;
 };
-} // namespace ft
+}  // namespace ft

@@ -14,13 +14,11 @@
 
 /////// INCLUDES ///////////
 #include <assert.h>
+#include <string.h>
+#include <algorithm>
 #include <cstring>
 #include <exception>
+#include <functional>
 #include <iostream>
 #include <memory>
-#include <string.h>
 #include <type_traits>
-#include <functional>
-#include <algorithm>
-#include <iostream>
-

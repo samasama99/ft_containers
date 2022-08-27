@@ -251,47 +251,47 @@
 #include <set>
 using namespace std;
 int main() {
-  // {
-  //   array<int, 2> x = {1, 2};
-  //   auto b = x.begin();
-  //   auto e = x.end();
-  //   if (b > e) {
-  //     cout << "hello\n";
-  //   };
-  // }
-  // {
-  //   deque<int> x{1, 2};
-  //   auto b = x.begin();
-  //   auto e = x.end();
-  //   if (b > e) {
-  //     cout << "hello\n";
-  //   };
-  // }
-  // {
-  //   list<int> x{1, 2};
-  //   auto b = x.begin();
-  //   auto e = x.end();
-  //   // if (b > e) {cout << "hello\n";};
-  // }
-  {
-    // set<int, std::greater<int>> x;
-    // x.insert(1);
-    // x.insert(10);
-    // x.insert(2);
-    // x.insert(6);
-    // x.insert(1);
-    // for (auto i : x) {
-    //   cout << i << "\n";
+    // {
+    //   array<int, 2> x = {1, 2};
+    //   auto b = x.begin();
+    //   auto e = x.end();
+    //   if (b > e) {
+    //     cout << "hello\n";
+    //   };
     // }
-    vector<int> y = {1,2,3,4,5,6};
-    sort(y.begin(), y.end(), [](int x, int y) {return y > x;});
-    for (auto i : y) {
-      cout << i << "\n";
+    // {
+    //   deque<int> x{1, 2};
+    //   auto b = x.begin();
+    //   auto e = x.end();
+    //   if (b > e) {
+    //     cout << "hello\n";
+    //   };
+    // }
+    // {
+    //   list<int> x{1, 2};
+    //   auto b = x.begin();
+    //   auto e = x.end();
+    //   // if (b > e) {cout << "hello\n";};
+    // }
+    {
+        // set<int, std::greater<int>> x;
+        // x.insert(1);
+        // x.insert(10);
+        // x.insert(2);
+        // x.insert(6);
+        // x.insert(1);
+        // for (auto i : x) {
+        //   cout << i << "\n";
+        // }
+        vector<int> y = {1, 2, 3, 4, 5, 6};
+        sort(y.begin(), y.end(), [](int x, int y) { return y > x; });
+        for (auto i : y) {
+            cout << i << "\n";
+        }
+        // auto b = x.begin();
+        // auto e = x.end();
+        // if (b > e) {
+        //   cout << "hello\n";
+        // };
     }
-    // auto b = x.begin();
-    // auto e = x.end();
-    // if (b > e) {
-    //   cout << "hello\n";
-    // };
-  }
 }

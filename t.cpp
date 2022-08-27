@@ -10,12 +10,12 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "vector/ft_vector.hpp"
 #include <iostream>
 #include <vector>
+#include "vector/ft_vector.hpp"
 
 int main() {
-  // std::vector<int>::iterator a(NULL); 
-  std::vector<int>::iterator b(NULL); 
-  // ft::vector<int>::iterator::pointer p = x.begin();
+    // std::vector<int>::iterator a(NULL);
+    std::vector<int>::iterator b(NULL);
+    // ft::vector<int>::iterator::pointer p = x.begin();
 }
