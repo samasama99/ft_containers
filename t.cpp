@@ -14,8 +14,26 @@
 #include <vector>
 #include "vector/ft_vector.hpp"
 
+typedef struct p {
+   public:
+    int a;
+    int b;
+    p(int a, int b) : a(a), b(b){};
+} p;
+
+class X {
+    p test;
+
+   public:
+    X(int x) : test(x, x){};
+    void t() { std::cout << "test\n"; }
+    X& operator*() { return *this; };
+    X* operator->() { return this; };
+};
+
 int main() {
-    // std::vector<int>::iterator a(NULL);
-    std::vector<int>::iterator b(NULL);
-    // ft::vector<int>::iterator::pointer p = x.begin();
+    X x(10);
+    x.t();
+    (*x).t();
+    x->t();
 }

@@ -1017,6 +1017,16 @@ int main() {
         assert(vec > vec2);
         std::cout << "pair relational operators :: pass\n";
     }
+    {
+        std::vector<std::string> vec;
+        vec.push_back("test0");
+        vec.push_back("test1");
+        vec.push_back("test2");
+        std::vector<std::string>::iterator x = vec.begin();
+        cout << *x << '\n';
+        cout << x->c_str() << '\n';
+        cout << (*x).c_str();
+    }
     std::cerr << "all passed\n";
     system("leaks a.out");
 }

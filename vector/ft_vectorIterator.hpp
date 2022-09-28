@@ -60,9 +60,9 @@ class vectorIterator {
 
     const reference operator*() const { return *p; };
 
-    reference operator->() { return *p; };
+    pointer operator->() { return &*p; };
 
-    const reference operator->() const { return *p; };
+    const pointer operator->() const { return &*p; };
 
     vectorIterator operator++(int) {
         vectorIterator tmp(*this);
