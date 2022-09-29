@@ -102,9 +102,7 @@ class map {
     //////////// does map return alloc inside of tree or the original alloc ??
     allocator_type get_allocator() const { return Alloc(); };
     iterator begin() { return iterator(_tree.theLeftest()); }
-    iterator end() {
-        return iterator(new avlNode<value_type>(_tree.theLeftest()));
-    }
+    iterator end() { return iterator(_tree._end); }
 
     void print() { _tree.print(); }
 
@@ -119,20 +117,15 @@ std::ostream& operator<<(std::ostream& os, const ft::pair<K, V>& f) {
 }
 }  // namespace ft
 
+#include <unistd.h>
 #include <map>
 
 int main() {
-    ft::map<int, int> m;
-    m[5] = 5;
-    m[3] = 3;
-    m[4] = 4;
-    m[1] = 1;
-    m[2] = 2;
-    m[6] = 6;
-    m.print();
-    ft::map<int, int>::iterator x = m.begin();
-    while (x != m.end())
-        ++x;
+    std::map<int, int> m;
+    assert(m.begin() == m.end());
+    m[1];
+    assert(m.begin()->first == 1);
+    assert(++m.begin() == m.end());
     // m.empty();
     // m.get_allocator();
     // m.key_comp();

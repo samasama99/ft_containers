@@ -2,69 +2,54 @@
 #include <iostream>
 #include "../pair/ft_pair.hpp"
 
+enum { RIGHT, LEFT, ROOT };
+
 template <typename T>
 struct avlNode {
     typedef T value_type;
     T data;
-    bool isEnd;
-    bool isLeft;
     avlNode* left;
     avlNode* right;
     avlNode* parent;
 
-   public:
-    bool End() { return isEnd; }
-    avlNode(avlNode* parent)
-        : data(T()),
-          isEnd(true),
-          isLeft(false),
-          left(NULL),
-          right(NULL),
-          parent(parent) {}
-    avlNode(const T& data)
-        : data(data),
-          isEnd(false),
-          isLeft(false),
-          left(NULL),
-          right(NULL),
-          parent(NULL) {}
-
-    static avlNode* Next(avlNode* current) {
-        assert(current != NULL);
+    static avlNode* Leftest(avlNode* current) {
         if (current->left == NULL)
             return current;
-        return Next(current->left);
+        return Leftest(current->left);
     }
 
-    static avlNode* Top(avlNode* current) {
-        assert(current != NULL);
-        if (current->parent == NULL)
+    static avlNode* Rightest(avlNode* current) {
+        if (current->right == NULL)
             return current;
-        return Top(current->parent);
+        return Rightest(current->right);
     }
 
-    static avlNode* Next(avlNode* current, avlNode* prev) {
-        assert(current != NULL);
-        std::cout << "current " << current->data << '\n';
-        if (!current->left && !current->right && current->isLeft) {
-            std::cout << "c1\n";
-            return current->parent;
-        }
-        if (!current->left && !current->right && !current->isLeft) {
-            std::cout << "c2\n";
-            return Top(current->parent);
-        }
-        if (prev->isLeft && current->right) {
-            std::cout << "c3\n";
-            return Next(current->right);
-        }
-        if (current->right) {
-            std::cout << "c4\n";
-            return current->right;
-        }
-        std::cout << "c5\n";
+    static avlNode* TopRight(avlNode* current, avlNode* prev) {
+        if (prev != current->right)
+            return current;
+        return TopRight(current->parent, current);
+    }
+    static avlNode* TopLeft(avlNode* current, avlNode* prev) {
+        if (prev != current->left)
+            return current;
+        return TopLeft(current->parent, current);
+    }
 
-        return NULL;
+   public:
+    avlNode(avlNode* parent) : left(NULL), right(NULL), parent(parent) {}
+    avlNode(const T& data)
+        : data(data), left(NULL), right(NULL), parent(NULL) {}
+
+    static avlNode* Next(avlNode* current) {
+        if (current->right)
+            return Leftest(current->right);
+        return TopRight(current->parent, current);
+    }
+
+    static avlNode* Previous(avlNode* current) {
+        if (current->left)
+            return Rightest(current->left);
+        return TopLeft(current->parent, current);
     }
 };
 
@@ -87,16 +72,16 @@ class AVL {
         }
         print(head->right, depth + 1);
         std::cout << std::string(depth, '\t') << head->data << " "
-                  << head->isLeft << "\n\n";
+                  << head->parent->data << "\n\n";
         print(head->left, depth + 1);
     }
 
     node left_rotate(node head) {
-        head->isLeft = true;
         node tmp = head->parent;
         head->parent = head->right;
-        if (head->right)
-            head->right->parent = tmp;
+        head->right->parent = tmp;
+        if (head->right->left)
+            head->right->left->parent = head;
         node temp = head->right;
         head->right = temp->left;
         temp->left = head;
@@ -104,11 +89,11 @@ class AVL {
     }
 
     node right_rotate(node head) {
-        head->isLeft = false;
         node tmp = head->parent;
         head->parent = head->left;
-        if (head->left)
-            head->left->parent = tmp;
+        head->left->parent = tmp;
+        if (head->left->right)
+            head->left->right->parent = head;
         node temp = head->left;
         head->left = temp->right;
         temp->right = head;
@@ -116,16 +101,15 @@ class AVL {
     }
 
     node right_left_rotate(node head) {
-        head->left->isLeft = false;
         head->right = right_rotate(head->right);  // parent
         return left_rotate(head);                 // grandparent
     }
 
     node left_right_rotate(node head) {
-        head->left->isLeft = true;
         head->left = left_rotate(head->left);  // parent
         return right_rotate(head);             // grandparent
     }
+
     size_type getMaxLen(const node head) const {
         if (head == NULL)
             return 0;
@@ -133,30 +117,30 @@ class AVL {
     }
 
     node theLeftest(node head) {
-        if (head == NULL)
-            return NULL;
+        if (head == _end)
+            return head;
         if (head->left == NULL)
             return head;
         return theLeftest(head->left);
     }
 
     node theRightest(node head) {
-        if (head == NULL)
-            return NULL;
+        if (head == _end)
+            return head;
         if (head->right == NULL)
             return head;
         return theRightest(head->right);
     }
 
     node inOrderSuccessor(node head) {
-        if (head == NULL)
-            return NULL;
+        if (head == _end)
+            return _end;
         return theRightest(head->left);
     }
 
     node inOrderPredecessor(node head) {
-        if (head == NULL)
-            return NULL;
+        if (head == _end)
+            return _end;
         return theLeftest(head->right);
     }
 
@@ -195,11 +179,9 @@ class AVL {
             return ft::make_pair(head, false);
 
         if (head->right) {
-            head->right->isLeft = false;
             head->right->parent = head;
         }
         if (head->left) {
-            head->left->isLeft = true;
             head->left->parent = head;
         }
         head = balance(head);
@@ -212,14 +194,19 @@ class AVL {
     size_t size() const { return _size; }
 
     ft::pair<node, bool> insert(const T data) {
-        if (_root == NULL) {
+        if (_root == _end) {
             node n = _alloc.allocate(1);
             _alloc.construct(n, data);
             _root = n;
+            _root->parent = _end;
             _size += 1;
+            _end->left = _root;
             return ft::make_pair(n, true);
         }
-        return insert(_root, data);
+        ft::pair<node, bool> t = insert(_root, data);
+        _root->parent = new Node(theRightest(_root));
+        _end->left = _root;
+        return t;
     }
 
     node find(node head, T elem) const {
@@ -257,7 +244,10 @@ class AVL {
         return balance(head);
     }
 
-    void remove(T el) { _root = remove(_root, el); }
+    void remove(T el) {
+        _root = remove(_root, el);
+        _root->parent = new Node(theRightest(_root));
+    }
 
     node find(T elem) const { return find(_root, elem); }
 
@@ -267,10 +257,16 @@ class AVL {
 
     node theRightest() { return theRightest(_root); }
 
-    AVL() : _root(NULL), _size(0), _comp(Cmp()), _alloc(Alloc()) {}
+    AVL() : _root(NULL), _end(NULL), _size(0), _comp(Cmp()), _alloc(Alloc()) {
+        _end = _alloc.allocate(1);
+        _root = _end;
+    }
 
     explicit AVL(const Cmp& comp, const Alloc& alloc = Alloc())
-        : _alloc(alloc), _comp(comp), _root(NULL), _size(0){};
+        : _alloc(alloc), _comp(comp), _root(NULL), _end(NULL), _size(0) {
+        _end = _alloc.allocate(1);
+        _root = _end;
+    };
 
     // travel ::
 
@@ -278,9 +274,6 @@ class AVL {
     Alloc _alloc;
     Cmp _comp;
     node _root;
+    node _end;
     size_type _size;
 };
-
-// TODO
-// insert should take a value instead of a node
-// use comp && allocator
