@@ -36,7 +36,7 @@ struct avlNode {
     }
 
    public:
-    avlNode(avlNode* parent) : left(NULL), right(NULL), parent(parent) {}
+    avlNode() : left(NULL), right(NULL), parent(NULL) {}
     avlNode(const T& data)
         : data(data), left(NULL), right(NULL), parent(NULL) {}
 
@@ -72,7 +72,7 @@ class AVL {
         }
         print(head->right, depth + 1);
         std::cout << std::string(depth, '\t') << head->data << " "
-                  << head->parent->data << "\n\n";
+                  << "\n\n";
         print(head->left, depth + 1);
     }
 
@@ -204,7 +204,7 @@ class AVL {
             return ft::make_pair(n, true);
         }
         ft::pair<node, bool> t = insert(_root, data);
-        _root->parent = new Node(theRightest(_root));
+        _root->parent = _end;
         _end->left = _root;
         return t;
     }
@@ -212,24 +212,25 @@ class AVL {
     node find(node head, T elem) const {
         if (head == NULL)
             return NULL;
-        if (head->data == elem)
+        if (!_comp(head->data, elem) && !_comp(elem, head->data))
             return head;
         if (_comp(elem, head->data))
             return find(head->left, elem);
         return find(head->right, elem);
     }
 
-    node remove(node head, T el) {
-        if (head == NULL) {
-            return NULL;
+    node remove(node head, const T& el) {
+        if (head == _end) {
+            return _end;
         }
         if (_comp(head->data, el)) {
-            head->left = remove(head->left, el);
-        } else if (_comp(el, head->data)) {
             head->right = remove(head->right, el);
+        } else if (_comp(el, head->data)) {
+            head->left = remove(head->left, el);
         } else {
             if (!head->left && !head->right) {
                 --_size;
+                _alloc.deallocate(head, 1);
                 return NULL;
             } else if (head->left == NULL) {
                 return head->right;
@@ -237,16 +238,23 @@ class AVL {
                 return head->left;
             }
             node tmp = inOrderPredecessor(head);
-            // std::cerr << "in order " << tmp->data << '\n';
-            head->data = tmp->data;
-            head->right = remove(head->right, tmp->data);
+            node r = head->right;
+            node l = head->left;
+            node p = head->parent;
+            _alloc.construct(head, tmp->data);
+            head->right = r;
+            head->left = l;
+            head->parent = p;
+            p = tmp->parent;
+            tmp->parent = p;
+            head->right = remove(head->right, head->data);
         }
         return balance(head);
     }
 
-    void remove(T el) {
+    void remove(const T& el) {
         _root = remove(_root, el);
-        _root->parent = new Node(theRightest(_root));
+        _root->parent = _end;
     }
 
     node find(T elem) const { return find(_root, elem); }
@@ -265,6 +273,7 @@ class AVL {
     explicit AVL(const Cmp& comp, const Alloc& alloc = Alloc())
         : _alloc(alloc), _comp(comp), _root(NULL), _end(NULL), _size(0) {
         _end = _alloc.allocate(1);
+        _alloc.construct(_end);
         _root = _end;
     };
 

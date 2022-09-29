@@ -17,10 +17,11 @@ class mapIterator {
    protected:
     T* p;
 
-    pointer base() { return p; };
     explicit mapIterator(const long t) { (void)t; };
 
    public:
+    pointer base() { return p; };
+
     explicit mapIterator() : p(NULL){};
 
     explicit mapIterator(T* t) : p(t){};
