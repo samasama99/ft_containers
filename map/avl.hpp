@@ -8,6 +8,7 @@ template <typename T>
 struct avlNode {
     typedef T value_type;
     T data;
+    size_t height;
     avlNode* left;
     avlNode* right;
     avlNode* parent;
@@ -29,6 +30,7 @@ struct avlNode {
             return current;
         return TopRight(current->parent, current);
     }
+
     static avlNode* TopLeft(avlNode* current, avlNode* prev) {
         if (prev != current->left)
             return current;
@@ -36,9 +38,9 @@ struct avlNode {
     }
 
    public:
-    avlNode() : left(NULL), right(NULL), parent(NULL) {}
+    avlNode() : height(0), left(NULL), right(NULL), parent(NULL) {}
     avlNode(const T& data)
-        : data(data), left(NULL), right(NULL), parent(NULL) {}
+        : data(data), height(1), left(NULL), right(NULL), parent(NULL) {}
 
     static avlNode* Next(avlNode* current) {
         if (current->right)
@@ -67,7 +69,7 @@ class AVL {
 
    private:
     void print(node head, size_t depth = 0) const {
-        if (head == nullptr) {
+        if (head == NULL) {
             return;
         }
         print(head->right, depth + 1);
@@ -85,6 +87,7 @@ class AVL {
         node temp = head->right;
         head->right = temp->left;
         temp->left = head;
+
         return temp;
     }
 
@@ -97,6 +100,7 @@ class AVL {
         node temp = head->left;
         head->left = temp->right;
         temp->right = head;
+
         return temp;
     }
 
@@ -111,7 +115,7 @@ class AVL {
     }
 
     size_type getMaxLen(const node head) const {
-        if (head == NULL)
+        if (head == NULL || head == _end)
             return 0;
         return 1 + std::max(getMaxLen(head->left), getMaxLen(head->right));
     }
@@ -124,7 +128,23 @@ class AVL {
         return theLeftest(head->left);
     }
 
+    const node theLeftest(node head) const {
+        if (head == _end)
+            return head;
+        if (head->left == NULL)
+            return head;
+        return theLeftest(head->left);
+    }
+
     node theRightest(node head) {
+        if (head == _end)
+            return head;
+        if (head->right == NULL)
+            return head;
+        return theRightest(head->right);
+    }
+
+    const node theRightest(node head) const {
         if (head == _end)
             return head;
         if (head->right == NULL)
@@ -144,8 +164,18 @@ class AVL {
         return theLeftest(head->right);
     }
 
+    size_t get_size(node n) {
+        if (n == NULL)
+            return 0;
+        return n->height;
+    }
+
+    size_t get_max_size(node n) {
+        return std::max(get_size(n->left), get_size(n->right)) + 1;
+    }
+
     node balance(node& head) {
-        int left = getMaxLen(head->left), right = getMaxLen(head->right);
+        int left = get_size(head->left), right = get_size(head->right);
         int diff = abs(left - right);
         if (diff <= 1)
             return head;
@@ -163,10 +193,9 @@ class AVL {
 
     ft::pair<node, bool> insert(node& head, const value_type& el) {
         if (head == NULL) {
-            node n = _alloc.allocate(1);
-            _alloc.construct(n, el);
-            head = n;
-            _size += 1;
+            head = _alloc.allocate(1);
+            _alloc.construct(head, el);
+            ++_size;
             return ft::make_pair(head, true);
         }
 
@@ -184,7 +213,13 @@ class AVL {
         if (head->left) {
             head->left->parent = head;
         }
+        head->height = get_max_size(head);
         head = balance(head);
+        if (head->left)
+            head->left->height = get_max_size(head->left);
+        if (head->right)
+            head->right->height = get_max_size(head->right);
+        head->height = get_max_size(head);
         return ret;
     }
 
@@ -193,15 +228,14 @@ class AVL {
 
     size_t size() const { return _size; }
 
-    ft::pair<node, bool> insert(const T data) {
+    ft::pair<node, bool> insert(const T& data) {
         if (_root == _end) {
-            node n = _alloc.allocate(1);
-            _alloc.construct(n, data);
-            _root = n;
+            _root = _alloc.allocate(1);
+            _alloc.construct(_root, data);
             _root->parent = _end;
-            _size += 1;
+            ++_size;
             _end->left = _root;
-            return ft::make_pair(n, true);
+            return ft::make_pair(_root, true);
         }
         ft::pair<node, bool> t = insert(_root, data);
         _root->parent = _end;
@@ -212,6 +246,8 @@ class AVL {
     node find(node head, T elem) const {
         if (head == NULL)
             return NULL;
+        if (head == _end)
+            return _end;
         if (!_comp(head->data, elem) && !_comp(elem, head->data))
             return head;
         if (_comp(elem, head->data))
@@ -219,23 +255,35 @@ class AVL {
         return find(head->right, elem);
     }
 
-    node remove(node head, const T& el) {
-        if (head == _end) {
-            return _end;
-        }
+    void remove(node& head, const T& el) {
+        if (head == NULL || head == _end)
+            return;
+
         if (_comp(head->data, el)) {
-            head->right = remove(head->right, el);
+            remove(head->right, el);
         } else if (_comp(el, head->data)) {
-            head->left = remove(head->left, el);
+            remove(head->left, el);
         } else {
             if (!head->left && !head->right) {
                 --_size;
+                _alloc.destroy(head);
                 _alloc.deallocate(head, 1);
-                return NULL;
+                head = NULL;
+                return;
             } else if (head->left == NULL) {
-                return head->right;
+                node tmp = head->right;
+                --_size;
+                _alloc.destroy(head);
+                _alloc.deallocate(head, 1);
+                head = tmp;
+                return;
             } else if (head->right == NULL) {
-                return head->left;
+                node tmp = head->left;
+                _alloc.destroy(head);
+                _alloc.deallocate(head, 1);
+                --_size;
+                head = tmp;
+                return;
             }
             node tmp = inOrderPredecessor(head);
             node r = head->right;
@@ -245,16 +293,22 @@ class AVL {
             head->right = r;
             head->left = l;
             head->parent = p;
-            p = tmp->parent;
-            tmp->parent = p;
-            head->right = remove(head->right, head->data);
+            remove(head->right, tmp->data);
         }
-        return balance(head);
+        head = balance(head);
+        if (head->left)
+            head->left->height = get_max_size(head->left);
+        if (head->right)
+            head->right->height = get_max_size(head->right);
+        head->height = get_max_size(head);
     }
 
     void remove(const T& el) {
-        _root = remove(_root, el);
-        _root->parent = _end;
+        remove(_root, el);
+        if (_size == 0)
+            _root = _end;
+        else
+            _root->parent = _end;
     }
 
     node find(T elem) const { return find(_root, elem); }
@@ -263,10 +317,23 @@ class AVL {
 
     node theLeftest() { return theLeftest(_root); }
 
+    const node theLeftest() const { return theLeftest(_root); }
+
     node theRightest() { return theRightest(_root); }
+
+    const node theRightest() const { return theRightest(_root); }
+
+    void clear() {
+        while (_root && _root != _end && _size != 0) {
+            remove(_root, _root->data);
+        }
+        _root = _end;
+        _size = 0;
+    }
 
     AVL() : _root(NULL), _end(NULL), _size(0), _comp(Cmp()), _alloc(Alloc()) {
         _end = _alloc.allocate(1);
+        _alloc.construct(_end);
         _root = _end;
     }
 
@@ -277,6 +344,10 @@ class AVL {
         _root = _end;
     };
 
+    ~AVL() {
+        clear();
+        _alloc.deallocate(_end, 1);
+    }
     // travel ::
 
    public:

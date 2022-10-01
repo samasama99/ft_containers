@@ -1,6 +1,7 @@
 #include <iterator>
 #include "../includes.hpp"
 #include "../iterators_traits.hpp"
+#include "../vector/ft_vector.hpp"
 #include "avl.hpp"
 #include "ft_mapIterator.hpp"
 
@@ -26,8 +27,11 @@ class map {
 
     typedef std::size_t size_type;
     struct value_compare : std::binary_function<value_type, value_type, bool> {
-        const key_compare c;
-        value_compare(const key_compare& k) : c(k) {}
+        typedef bool result_type;
+        typedef value_type first_argument_type;
+        typedef value_type second_argument_type;
+        key_compare c;
+        value_compare(key_compare k) : c(k) {}
         bool operator()(const value_type& v1, const value_type& v2) const {
             return c(v1.first, v2.first);
         }
@@ -35,7 +39,6 @@ class map {
     typedef AVL<value_type, value_compare> tree_type;
 
    public:
-    // constructors:
     explicit map(const key_compare& comp = key_compare(),
                  const allocator_type& alloc = allocator_type())
         : _alloc(alloc),
@@ -43,23 +46,43 @@ class map {
               value_compare(comp),
               typename allocator_type::template rebind<avlNode<T> >::other()){};
 
-    // template <class InputIterator>
-    // map(InputIterator first,
-    //     InputIterator last,
-    //     const key_compare& comp = key_compare(),
-    //     const allocator_type& alloc = allocator_type()){};
+    template <class InputIterator>
+    map(InputIterator first,
+        InputIterator last,
+        const key_compare& comp = key_compare(),
+        const allocator_type& alloc = allocator_type())
+        : _alloc(alloc),
+          _comp(comp),
+          _tree(
+              value_compare(comp),
+              typename allocator_type::template rebind<avlNode<T> >::other()) {
+        insert(first, last);
+    };
 
-    // map(const map& x){};
-    // destructor:
-    ~map(){};
-    // operator=
-    map& operator=(const map& x);
-    // capacity:
+    map(const map& x)
+        : _alloc(x._alloc),
+          _comp(x._comp),
+          _tree(x._tree._comp, x._tree._alloc) {
+        insert(x.begin(), x.end());
+    };
+
+    ~map() { _tree.clear(); };
+
+    map& operator=(const map& x) {
+        if (&x == this)
+            return *this;
+        _comp = x._comp;
+        _alloc = x._alloc;
+        _tree.clear();
+        insert(x.begin(), x.end());
+        return *this;
+    };
+
     bool empty() const { return _tree.size() == 0; };
 
     size_type size() const { return _tree.size(); };
 
-    // size_type max_size() const;
+    size_type max_size() const { return _alloc.max_size(); };
 
     mapped_type& operator[](const key_type& k) {
         return _tree.insert(ft::make_pair(k, mapped_type())).first->data.second;
@@ -83,12 +106,24 @@ class map {
     };
 
     void erase(iterator position) { _tree.remove(*position); };
-    // size_type erase(const key_type &k);
-    // void erase(iterator first, iterator last);
+
+    size_type erase(const key_type& k) {
+        _tree.remove(ft::make_pair(k, T()));
+        return 1;
+    };
+
+    void erase(iterator first, iterator last) {
+        ft::vector<ft::pair<Key, T> > t;
+        for (iterator i = first; i != last; ++i) {
+            t.push_back(ft::make_pair(i->first, i->second));
+        }
+        for (size_t i = 0; i < t.size(); ++i) {
+            _tree.remove(t[i]);
+        }
+    };
 
     void swap(map& x) { swap(*this, x); };
 
-    // TODO AVL clear
     void clear() { _tree.clear(); };
 
     key_compare key_comp() const { return key_compare(); };
@@ -105,15 +140,40 @@ class map {
     const_iterator find(const key_type& k) const { return find(k); };
 
     size_type count(const key_type& k) const {
-        return (_tree.find(make_pair(k, mapped_type())) != NULL) ? 1 : 0;
+        return ((_tree.find(ft::make_pair(k, mapped_type()))) ? 1 : 0);
     };
 
-    // iterator lower_bound(const key_type &k);
-    // const_iterator lower_bound(const key_type &k) const;
-    // iterator upper_bound(const key_type &k);
-    // const_iterator upper_bound(const key_type &k) const;
-    // pair<const_iterator, const_iterator> equal_range(const key_type &k)
-    // const; pair<iterator, iterator> equal_range(const key_type &k);
+    iterator lower_bound(const key_type& k) { return find(k); };
+
+    const_iterator lower_bound(const key_type& k) const { return find(k); };
+
+    iterator upper_bound(const key_type& k) {
+        typename tree_type::node i =
+            _tree.find(ft::make_pair(k, mapped_type()));
+        if (i == NULL)
+            return end();
+        if (i->right)
+            return iterator(i->right);
+        return end();
+    };
+
+    const_iterator upper_bound(const key_type& k) const {
+        typename tree_type::node i =
+            _tree.find(ft::make_pair(k, mapped_type()));
+        if (i == NULL)
+            return end();
+        if (i->right)
+            return const_iterator(i->right);
+        return end();
+    };
+
+    pair<const_iterator, const_iterator> equal_range(const key_type& k) const {
+        return ft::make_pair(lower_bound(k), upper_bound(k));
+    };
+
+    pair<iterator, iterator> equal_range(const key_type& k) {
+        return ft::make_pair(lower_bound(k), upper_bound(k));
+    };
 
     allocator_type get_allocator() const { return Alloc(); };
 
@@ -121,10 +181,15 @@ class map {
 
     iterator end() { return iterator(_tree._end); }
 
+    const_iterator begin() const { return const_iterator(_tree.theLeftest()); }
+
+    const_iterator end() const { return const_iterator(_tree._end); }
+
     void print() { _tree.print(); }
 
    private:
     Alloc _alloc;
+    Compare _comp;
     tree_type _tree;
 };
 template <typename K, typename V>
@@ -133,35 +198,3 @@ std::ostream& operator<<(std::ostream& os, const ft::pair<K, V>& f) {
     return os;
 }
 }  // namespace ft
-
-#include <unistd.h>
-#include <map>
-
-int main() {
-    std::map<int, int> m;
-    m[1] = 5;
-    m[2] = 5;
-    m[3] = 5;
-    m[4] = 5;
-    m[5] = 5;
-    m[6] = 5;
-    ft::map<int, int> n;
-    n.insert(m.begin(), m.end());
-    ft::map<int, int>::iterator i = n.begin();
-    std::map<int, int>::iterator i2 = m.begin();
-    while (i != n.end()) {
-        assert(i->first == i2->first);
-        assert(i->second == i2->second);
-        ++i;
-        ++i2;
-    }
-    n.print();
-    n.erase(n.find(4));
-    n.erase(n.find(2));
-    std::cout << '\n';
-    n.print();
-    std::cout << '\n';
-    n.erase(n.find(6));
-    std::cout << '\n';
-    n.print();
-}

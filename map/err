@@ -1,7 +1,0 @@
-ft_map.cpp:72:38: error: cannot initialize a variable of type 'typename tree_type::node' (aka 'Node<ft::pair<const int, int> > *') with an rvalue of type 'std::__1::allocator<ft::pair<const int, int> >::pointer' (aka 'ft::pair<const int, int> *')
-            typename tree_type::node p = _tree._alloc.allocate(1);
-                                     ^   ~~~~~~~~~~~~~~~~~~~~~~~~
-ft_map.cpp:116:6: note: in instantiation of member function 'ft::map<int, int, std::__1::less<int>, std::__1::allocator<ft::pair<const int, int> > >::operator[]' requested here
-    m[10] = 15;
-     ^
-1 error generated.
