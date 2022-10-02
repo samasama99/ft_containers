@@ -31,6 +31,7 @@ class vector {
 
     typedef ft::vectorIterator<Type> iterator;
     typedef ft::reverseVectorIterator<Type, iterator> reverse_iterator;
+
     typedef ft::vectorIterator<const Type> const_iterator;
     typedef ft::reverseVectorIterator<const Type, iterator>
         const_reverse_iterator;

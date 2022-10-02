@@ -25,12 +25,18 @@ class map {
     typedef ft::mapIterator<avlNode<value_type> > iterator;
     typedef const ft::mapIterator<avlNode<value_type> > const_iterator;
 
+    typedef ft::reverseMapIterator<avlNode<value_type>, iterator>
+        reverse_iterator;
+    typedef const ft::reverseMapIterator<avlNode<value_type>, iterator>
+        const_reverse_iterator;
+
     typedef std::size_t size_type;
     struct value_compare : std::binary_function<value_type, value_type, bool> {
         typedef bool result_type;
         typedef value_type first_argument_type;
         typedef value_type second_argument_type;
         key_compare c;
+        value_compare() : c() {}
         value_compare(key_compare k) : c(k) {}
         bool operator()(const value_type& v1, const value_type& v2) const {
             return c(v1.first, v2.first);
@@ -122,13 +128,17 @@ class map {
         }
     };
 
-    void swap(map& x) { swap(*this, x); };
+    void swap(map& x) {
+        map tmp = x;
+        x = *this;
+        *this = tmp;
+    };
 
     void clear() { _tree.clear(); };
 
-    key_compare key_comp() const { return key_compare(); };
+    key_compare key_comp() const { return _comp; };
 
-    value_compare value_comp() const { return value_comp(); };
+    value_compare value_comp() const { return _vcomp; };
 
     iterator find(const key_type& k) {
         avlNode<value_type>* n = _tree.find(value_type(k, mapped_type()));
@@ -185,11 +195,20 @@ class map {
 
     const_iterator end() const { return const_iterator(_tree._end); }
 
+    iterator rbegin() { return iterator(_tree.theRightest()); }
+
+    iterator rend() { return iterator(_tree._root); }
+
+    const_iterator rbegin() const { return const_iterator(_tree.theLeftest()); }
+
+    const_iterator rend() const { return const_iterator(_tree._end); }
+
     void print() { _tree.print(); }
 
    private:
-    Alloc _alloc;
-    Compare _comp;
+    allocator_type _alloc;
+    key_compare _comp;
+    value_compare _vcomp;
     tree_type _tree;
 };
 template <typename K, typename V>
