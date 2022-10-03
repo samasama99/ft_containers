@@ -11,20 +11,19 @@
 /* ************************************************************************** */
 
 #include <iostream>
+#include "helpers/enable_if.hpp"
 
-// template<bool Cond, class T = void> struct enable_if {};
-// template<class T> struct enable_if<true, T> { typedef T type; };
-//
+class A {};
 
-// namespace ft {
-// } // namespace ft
+template <typename T>
+typename ft::enable_if<std::is_class<T>::value, T>::type is_even(T i) {
+    return i;
+}
 
-// template <typename T>
-// typename ft::enable_if<T, std::is_integral<T>::value>::type is_even(T i) {
-//   return !(i % 2);
-// }
-
-// int main() {
-//   int x;
-//   is_even(x);
-// }
+int main() {
+    // should work with class bc enale_if :: value == A
+    A x;
+    // should not work with int bc enale_if :: value == void
+    // int x;
+    is_even(x);
+}

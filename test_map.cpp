@@ -1,3 +1,4 @@
+#include <iostream>
 #include <map>
 #include "map/ft_map.hpp"
 
@@ -212,6 +213,43 @@ int main() {
         ret = mymap.equal_range('b');
         assert(ret.first->second == 20);
         assert(ret.second->second == 30);
+        cout << "testing equal range\n";
+    }
+    {
+        map<std::string, std::string> s;
+        s["test"] = "hello";
+        s["test2"] = ",";
+        s["test3"] = "world";
+        s["test4"] = "!";
+        map<std::string, std::string>::reverse_iterator ri = s.rbegin();
+        assert(ri->first == "test4" && ri->second == "!");
+        ++ri;
+        assert(ri->first == "test3" && ri->second == "world");
+        ++ri;
+        assert(ri->first == "test2" && ri->second == ",");
+        ++ri;
+        assert(ri->first == "test" && ri->second == "hello");
+
+        --ri;
+        assert(ri->first == "test2" && ri->second == ",");
+        --ri;
+        assert(ri->first == "test3" && ri->second == "world");
+        --ri;
+        assert(ri->first == "test4" && ri->second == "!");
+        cout << "testing reverse_iterator\n";
+    }
+    {
+        ft::map<int, int, greater<int> > m;
+        m[1];
+        m[2];
+        m[3];
+        ft::map<int, int, greater<int> >::iterator i = m.begin();
+        assert(i->first == 3);
+        i++;
+        assert(i->first == 2);
+        ++i;
+        assert(i->first == 1);
+        cout << "changing the comp object\n";
     }
     system("leaks a.out");
     std::cout << "all pass" << std::endl;

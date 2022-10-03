@@ -1,6 +1,5 @@
 #include <iterator>
-#include "../includes.hpp"
-#include "../iterators_traits.hpp"
+#include "../helpers/includes.hpp"
 #include "../vector/ft_vector.hpp"
 #include "avl.hpp"
 #include "ft_mapIterator.hpp"
@@ -30,7 +29,7 @@ class map {
     typedef const ft::reverseMapIterator<avlNode<value_type>, iterator>
         const_reverse_iterator;
 
-    typedef std::size_t size_type;
+    typedef size_t size_type;
     struct value_compare : std::binary_function<value_type, value_type, bool> {
         typedef bool result_type;
         typedef value_type first_argument_type;
@@ -100,7 +99,16 @@ class map {
     };
 
     iterator insert(iterator position, const value_type& val) {
-        (void)position;
+        if (!position.base()->left || !position.base()->right)
+            return insert(val).first;
+        typename tree_type::node p = _tree.inOrderPredecessor(position.base());
+        typename tree_type::node s = _tree.inOrderSuccessor(position.base());
+        if (p && s) {
+            if (_vcomp(s->data, p->data) && _vcomp(p->data, s->data)) {
+                typename tree_type::node b = position.base();
+                return iterator(_tree.insert(b, val).first);
+            }
+        }
         return insert(val).first;
     };
 
@@ -195,9 +203,9 @@ class map {
 
     const_iterator end() const { return const_iterator(_tree._end); }
 
-    iterator rbegin() { return iterator(_tree.theRightest()); }
+    reverse_iterator rbegin() { return reverse_iterator(_tree._end); }
 
-    iterator rend() { return iterator(_tree._root); }
+    reverse_iterator rend() { return reverse_iterator(begin()); }
 
     const_iterator rbegin() const { return const_iterator(_tree.theLeftest()); }
 

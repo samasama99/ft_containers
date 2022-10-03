@@ -26,9 +26,9 @@ struct avlNode {
     }
 
     static avlNode* TopRight(avlNode* current, avlNode* prev) {
-        if (prev != current->right)
-            return current;
-        return TopRight(current->parent, current);
+        if (prev == current->right)
+            return TopRight(current->parent, current);
+        return current;
     }
 
     static avlNode* TopLeft(avlNode* current, avlNode* prev) {
@@ -43,8 +43,9 @@ struct avlNode {
         : data(data), height(1), left(NULL), right(NULL), parent(NULL) {}
 
     static avlNode* Next(avlNode* current) {
-        if (current->right)
+        if (current->right) {
             return Leftest(current->right);
+        }
         return TopRight(current->parent, current);
     }
 
@@ -67,13 +68,12 @@ class AVL {
     typedef size_t size_type;
     typedef T value_type;
 
-   private:
     void print(node head, size_t depth = 0) const {
         if (head == NULL) {
             return;
         }
         print(head->right, depth + 1);
-        std::cout << std::string(depth, '\t') << head->data << " "
+        std::cout << std::string(depth, '\t') << '[' << head->data << ']' << " "
                   << "\n\n";
         print(head->left, depth + 1);
     }
@@ -121,6 +121,8 @@ class AVL {
     }
 
     node theLeftest(node head) {
+        if (head == NULL)
+            return NULL;
         if (head == _end)
             return head;
         if (head->left == NULL)
@@ -129,6 +131,8 @@ class AVL {
     }
 
     const node theLeftest(node head) const {
+        if (head == NULL)
+            return NULL;
         if (head == _end)
             return head;
         if (head->left == NULL)
@@ -137,6 +141,8 @@ class AVL {
     }
 
     node theRightest(node head) {
+        if (head == NULL)
+            return NULL;
         if (head == _end)
             return head;
         if (head->right == NULL)
@@ -145,23 +151,13 @@ class AVL {
     }
 
     const node theRightest(node head) const {
+        if (head == NULL)
+            return NULL;
         if (head == _end)
             return head;
         if (head->right == NULL)
             return head;
         return theRightest(head->right);
-    }
-
-    node inOrderSuccessor(node head) {
-        if (head == _end)
-            return _end;
-        return theRightest(head->left);
-    }
-
-    node inOrderPredecessor(node head) {
-        if (head == _end)
-            return _end;
-        return theLeftest(head->right);
     }
 
     size_t get_size(node n) {
@@ -207,12 +203,12 @@ class AVL {
         else
             return ft::make_pair(head, false);
 
-        if (head->right) {
+        if (head->right)
             head->right->parent = head;
-        }
-        if (head->left) {
+
+        if (head->left)
             head->left->parent = head;
-        }
+
         head->height = get_max_size(head);
         head = balance(head);
         if (head->left)
@@ -224,6 +220,18 @@ class AVL {
     }
 
    public:
+    node inOrderSuccessor(node head) {
+        if (head == _end)
+            return _end;
+        return theRightest(head->left);
+    }
+
+    node inOrderPredecessor(node head) {
+        if (head == _end)
+            return _end;
+        return theLeftest(head->right);
+    }
+
     size_type getMaxLen() const { return getMaxLen(_root); }
 
     size_t size() const { return _size; }
@@ -272,17 +280,21 @@ class AVL {
                 return;
             } else if (head->left == NULL) {
                 node tmp = head->right;
+                node tmp2 = head->parent;
                 --_size;
                 _alloc.destroy(head);
                 _alloc.deallocate(head, 1);
                 head = tmp;
+                head->parent = tmp2;
                 return;
             } else if (head->right == NULL) {
                 node tmp = head->left;
+                node tmp2 = head->parent;
                 _alloc.destroy(head);
                 _alloc.deallocate(head, 1);
                 --_size;
                 head = tmp;
+                head->parent = tmp2;
                 return;
             }
             node tmp = inOrderPredecessor(head);
@@ -295,6 +307,7 @@ class AVL {
             head->parent = p;
             remove(head->right, tmp->data);
         }
+        head->height = get_max_size(head);
         head = balance(head);
         if (head->left)
             head->left->height = get_max_size(head->left);

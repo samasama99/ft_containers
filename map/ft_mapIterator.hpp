@@ -1,5 +1,5 @@
 #pragma once
-#include "../iterators_traits.hpp"
+#include "../helpers/iterators_traits.hpp"
 
 namespace ft {
 template <typename T>
@@ -84,79 +84,86 @@ class mapIterator {
 
 template <typename T, class iter>
 class reverseMapIterator {
-   private:
-    iter base_iter;
-    reverseMapIterator(const long t) : iter(t){};
-
    public:
-    typedef typename iter::difference_type difference_type;
-    typedef typename iter::value_type value_type;
-    typedef typename iter::pointer pointer;
-    typedef typename iter::reference reference;
-    typedef typename iter::iterator_category iterator_category;
+    typedef typename ft::iterator_traits<T*>::difference_type difference_type;
+    typedef typename ft::iterator_traits<T*>::value_type value_type;
+    typedef typename ft::iterator_traits<T*>::pointer pointer;
+    typedef typename ft::iterator_traits<T*>::reference reference;
+    typedef
+        typename ft::iterator_traits<T*>::iterator_category iterator_category;
+
     typedef typename value_type::value_type value_pair;
 
+   protected:
+    T* p;
+
+    explicit reverseMapIterator(const long t) { (void)t; };
+
    public:
-    explicit reverseMapIterator() : base_iter(){};
+    pointer base() { return p; };
 
-    explicit reverseMapIterator(T* t) : base_iter(t){};
+    explicit reverseMapIterator() : p(NULL){};
 
-    template <class iterator>
-    reverseMapIterator(const iterator& src) : base_iter(src){};
+    explicit reverseMapIterator(T* t) : p(t){};
+
+    reverseMapIterator(const iter& src) : p(src.base()){};
 
     ~reverseMapIterator(){};
-    template <class iterator>
-    iterator& operator=(const iterator& src) {
+
+    // template <class iterator>
+    reverseMapIterator& operator=(const reverseMapIterator& src) {
         if (this == &src)
             return *this;
-        base_iter = src;
+        p = src.p;
         return *this;
     };
 
-    iter base() { return base_iter; };
-
-    const iter base() const { return base_iter; };
+    const pointer base() const { return p; };
 
     bool operator==(const reverseMapIterator& src) const {
-        return base_iter == src.base();
+        return src.base() == p;
     };
 
     bool operator!=(const reverseMapIterator& src) const {
-        return !(base_iter == src.base());
+        return !(src.base() == p);
     };
 
-    value_pair& operator*() {
-        reverseMapIterator tmp = base_iter;
-        return *(--tmp);
-    };
+    value_pair& operator*() { return value_type::Previous(p)->data; };
 
     const value_pair& operator*() const {
-        reverseMapIterator tmp = base_iter;
-        return *(--tmp);
+        return value_type::Previous(p)->data;
     };
 
-    value_pair* operator->() {
-        iter tmp = base_iter;
-        return &*(--tmp);
-    };
+    value_pair* operator->() { return &value_type::Previous(p)->data; };
 
     const value_pair* operator->() const {
-        iter tmp = base_iter;
-        return &*(--tmp);
+        return &value_type::Previous(p)->data;
     };
 
-    reverseMapIterator operator++(int) { return base_iter--; };  // post
+    reverseMapIterator operator++(int) {
+        reverseMapIterator tmp(*this);
+        --(*this);
+        return tmp;
+    };  // post
 
     reverseMapIterator& operator++() {
-        --base_iter;
+        p = value_type::Previous(p);
         return *this;
     };  // pre
 
-    reverseMapIterator operator--(int) { return base_iter++; };
+    reverseMapIterator operator--(int) {
+        reverseMapIterator tmp(*this);
+        ++(*this);
+        return tmp;
+    };  // post
 
     reverseMapIterator& operator--() {
-        ++base_iter;
+        p = value_type::Next(p);
         return *this;
-    };
+    };  // pre
+
+    bool operator==(const pointer ptr) const { return p == ptr; };
+
+    bool operator!=(const pointer ptr) const { return p != ptr; };
 };
 };  // namespace ft

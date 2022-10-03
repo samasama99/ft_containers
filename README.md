@@ -1,14 +1,13 @@
 # ft_containers
 ## Trying to re-implement some of c++ containers.
-## vector, stack, map and set .
+## vector, stack, map .
+
 - [x] vector
-- [ ] map
-- [ ] stack
+- [X] map
+- [X] stack
 - [x] iterators_traits
-- [x] reverse_iterator
 - [x] enable_if
 - [x] is_integral
-- [x] equal and/or lexicographical_compare
+- [x] equal and lexicographical_compare
 - [x] std::pair
 - [x] std::make_pair
-- [ ] set

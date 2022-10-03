@@ -11,11 +11,11 @@
 /* ************************************************************************** */
 
 #pragma once
-#include "../enable_if.hpp"
-#include "../equal.hpp"
-#include "../includes.hpp"
-#include "../is_same.hpp"
-#include "../lexicographical_compare.hpp"
+#include "../helpers/enable_if.hpp"
+#include "../helpers/equal.hpp"
+#include "../helpers/includes.hpp"
+#include "../helpers/is_same.hpp"
+#include "../helpers/lexicographical_compare.hpp"
 #include "ft_vectorIterator.hpp"
 
 namespace ft {
@@ -24,7 +24,7 @@ class vector {
    public:
     // TYPE DEFINITIONS
     typedef Allocator allocator_type;
-    typedef std::size_t size_type;
+    typedef size_t size_type;
     typedef Type value_type;
     typedef typename allocator_type::reference reference;
     typedef typename allocator_type::const_reference const_reference;
@@ -63,16 +63,18 @@ class vector {
         : _array(NULL), _size(n), _capacity(n), _alloc(alloc) {
         _array = allocate(n);
         for (size_type i = 0; i < n; ++i) {
+            _alloc.construct(&_array[i], val);
+        }
+        for (size_type i = 0; i < n; ++i) {
             _array[i] = val;
         }
     };
 
     template <class InputIterator>
-    vector(
-        typename ft::enable_if<InputIterator,
-                               std::is_class<InputIterator>::value>::type first,
-        InputIterator last,
-        const allocator_type& alloc = allocator_type())
+    vector(typename ft::enable_if<std::is_class<InputIterator>::value,
+                                  InputIterator>::type first,
+           InputIterator last,
+           const allocator_type& alloc = allocator_type())
         : _array(NULL), _size(0), _capacity(0), _alloc(alloc) {
         for (InputIterator iter = first; iter != last; ++iter) {
             push_back(*iter);
@@ -125,7 +127,7 @@ class vector {
             reserve(n);
         }
         for (size_t i = _size; i < n; ++i) {
-            _array[i] = val;
+            _alloc.construct(&_array[i], val);
             _size++;
         }
     };
@@ -170,23 +172,28 @@ class vector {
 
     //  Modifiers
     template <class InputIterator>
-    void assign(
-        typename ft::enable_if<InputIterator,
-                               std::is_class<InputIterator>::value>::type first,
-        InputIterator last) {
+    void assign(typename ft::enable_if<std::is_class<InputIterator>::value,
+                                       InputIterator>::type first,
+                InputIterator last) {
         clear();
         insert(begin(), first, last);
     };
 
     void assign(size_type n, const value_type& val) {
         clear();
-        resize(n, val);
+        if (n > _capacity) {
+            reserve(n);
+        }
+        for (size_t i = _size; i < n; ++i) {
+            _alloc.construct(&_array[i], val);
+            _size++;
+        }
     };
 
     void push_back(const value_type& val) {
         if (_size == _capacity)
             reserve((_capacity == 0) ? 1 : (_capacity * 2));
-        _array[_size++] = val;
+        _alloc.construct(&_array[_size++], val);
     };
 
     void pop_back() {
@@ -240,11 +247,10 @@ class vector {
     };
 
     template <class InputIterator>
-    void insert(
-        iterator position,
-        typename ft::enable_if<InputIterator,
-                               std::is_class<InputIterator>::value>::type first,
-        InputIterator last) {
+    void insert(iterator position,
+                typename ft::enable_if<std::is_class<InputIterator>::value,
+                                       InputIterator>::type first,
+                InputIterator last) {
         if (_array == NULL && position == NULL && first != last) {
             push_back(*first);
             ++first;
