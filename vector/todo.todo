@@ -4,6 +4,6 @@
 - [x] try to replace is_same
 - [] try to replace static_assert
 - [] find a better fix for max_size() for T = char
-- [] std::relational operators (vector)
-- [] test copy const and copy = for vector and iterator
+- [X] std::relational operators (vector)
+- [X] test copy const and copy = for vector and iterator
 - [x] make todo
