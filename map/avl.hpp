@@ -1,6 +1,6 @@
-// AVL a self balancing binary search tree
+#pragma once
+#include <ft_pair.hpp>
 #include <iostream>
-#include "../pair/ft_pair.hpp"
 
 enum { RIGHT, LEFT, ROOT };
 

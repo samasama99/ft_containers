@@ -1,8 +1,9 @@
+#pragma once
+#include <avl.hpp>
+#include <ft_mapIterator.hpp>
+#include <ft_vector.hpp>
+#include <includes.hpp>
 #include <iterator>
-#include "../helpers/includes.hpp"
-#include "../vector/ft_vector.hpp"
-#include "avl.hpp"
-#include "ft_mapIterator.hpp"
 
 namespace ft {
 template <class Key,

@@ -1,21 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   is_integral.hpp                                    :+:      :+:    :+:   */
+/*   test_if_enable.cpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: orahmoun <orahmoun@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/08/16 12:59:22 by orahmoun          #+#    #+#             */
-/*   Updated: 2022/08/16 12:59:23 by orahmoun         ###   ########.fr       */
+/*   Created: 2022/08/16 12:59:39 by orahmoun          #+#    #+#             */
+/*   Updated: 2022/08/16 12:59:40 by orahmoun         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <includes.hpp>
+#include <enable_if.hpp>
+#include <iostream>
 
-namespace ft {
+class A {};
+
 template <typename T>
-struct is_integral {
-    typedef T value_type;
-    static const bool value = std::numeric_limits<T>::is_integer;
-};
-};  // namespace ft
+typename ft::enable_if<std::is_class<T>::value, T>::type is_even(T i) {
+    return i;
+}
+
+int main() {
+    // should work with class bc enale_if :: value == A
+    A x;
+    // should not work with int bc enale_if :: value == void
+    // int x;
+    is_even(x);
+}

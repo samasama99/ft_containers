@@ -10,8 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../helpers/includes.hpp"
-#include "../vector/ft_vector.hpp"
+#pragma once
+#include <ft_vector.hpp>
+#include <includes.hpp>
 
 namespace ft {
 template <class T, class Container = ft::vector<T> >
