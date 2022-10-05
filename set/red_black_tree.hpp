@@ -2,6 +2,12 @@
 #include <ft_pair.hpp>
 #include <includes.hpp>
 
+#include <cstddef>
+#include <map>
+#include <ostream>
+#include <queue>
+#include <vector>
+
 typedef enum { RED, BLACK } Color;
 typedef enum { LEFT, RIGHT } Position;
 
@@ -14,6 +20,8 @@ struct tree_node {
     Color col;
     Position pos;
 
+    tree_node(tree_node* p) : left(NULL), right(p), parent(NULL) {}
+
     tree_node(T data)
         : data(data),
           left(NULL),
@@ -21,6 +29,43 @@ struct tree_node {
           parent(NULL),
           col(RED),
           pos(RIGHT) {}
+
+    static tree_node* Leftest(tree_node* current) {
+        if (current->left == NULL)
+            return current;
+        return Leftest(current->left);
+    }
+
+    static tree_node* Rightest(tree_node* current) {
+        if (current->right == NULL)
+            return current;
+        return Rightest(current->right);
+    }
+
+    static tree_node* TopRight(tree_node* current, tree_node* prev) {
+        if (prev == current->right)
+            return TopRight(current->parent, current);
+        return current;
+    }
+
+    static tree_node* TopLeft(tree_node* current, tree_node* prev) {
+        if (prev != current->left)
+            return current;
+        return TopLeft(current->parent, current);
+    }
+
+    static tree_node* Next(tree_node* current) {
+        if (current->right) {
+            return Leftest(current->right);
+        }
+        return TopRight(current->parent, current);
+    }
+
+    static tree_node* Previous(tree_node* current) {
+        if (current->left)
+            return Rightest(current->left);
+        return TopLeft(current->parent, current);
+    };
 };
 
 template <class T,
@@ -32,34 +77,89 @@ class red_black_tree {
     typedef T value_type;
 
    private:
-    size_t height() {
-        if (_root == NULL)
-            return 0;
-        return height(_root) - 1;
-    }
+    // checker { made by : jalalium }
+    // bool check(node n, std::map<node, std::vector<int> >& mp) {
+    //     bool ok = true;
+    //     if (n->left != NULL) {
+    //         if (n->value <= n->left->value) {
+    //             std::cout << "LEFT CHILD LARGER OR EQUAL TO PARENT " <<
+    //             n->value
+    //                       << " " << n->left->value << std::endl;
+    //             return false;
+    //         }
+    //         if (n->color == RED && n->left->color == RED) {
+    //             std::cout << "RED PARENT WITH RED CHILD: " << n->value << " "
+    //                       << n->left->value << std::endl;
+    //             return false;
+    //         }
+    //         ok &= check(n->left, mp);
+    //     }
+    //     if (n->right != NULL) {
+    //         if (n->value >= n->right->value) {
+    //             std::cout << "RIGHT CHILD SMALLER OR EQUAL TO PARENT "
+    //                       << n->value << " " << n->left->value << std::endl;
+    //             return false;
+    //         }
+    //         if (n->color == RED && n->right->color == RED) {
+    //             std::cout << "RED PARENT WITH RED CHILD: " << n->value << " "
+    //                       << n->right->value << std::endl;
+    //             return false;
+    //         }
+    //         ok &= check(n->right, mp);
+    //     }
+    //     std::vector<int> tmp;
+    //     if (n->left != NULL) {
+    //         for (int z : mp[n->left])
+    //             tmp.push_back(z);
+    //     } else
+    //         tmp.push_back(0);
+    //     if (n->right != NULL) {
+    //         for (int z : mp[n->right])
+    //             tmp.push_back(z);
+    //     } else
+    //         tmp.push_back(0);
+    //     std::sort(tmp.begin(), tmp.end());
+    //     for (int& z : tmp)
+    //         z += (n->color == BLACK);
+    //     mp[n] = tmp;
+    //     if (tmp[0] != tmp.back()) {
+    //         std::cout << "NODE " << n->value << std::endl;
+    //         for (int z : tmp)
+    //             std::cout << z << " ";
+    //         std::cout << std::endl;
+    //     }
+    //     return (ok & (tmp[0] == tmp.back()));
+    // }
+    // end of checker !
 
-    size_t height(node& current) {
-        if (current == NULL)
-            return 0;
-        size_t l = height(current->left) + 1;
-        size_t r = height(current->right) + 1;
-        return std::max(l, r);
-    }
+    // size_t height() {
+    //     if (_root == NULL)
+    //         return 0;
+    //     return height(_root) - 1;
+    // }
 
-    size_t black_nodes(node& current) {
-        if (current == NULL)
-            return 1;
-        size_t l = black_nodes(current->left);
-        size_t r = black_nodes(current->right);
-        if (l != r) {
-            // throw error
-            // or fix the tree
-        }
-        if (current->col == BLACK) {
-            l = l + 1;
-        }
-        return l;
-    }
+    // size_t height(node& current) {
+    //     if (current == NULL)
+    //         return 0;
+    //     size_t l = height(current->left) + 1;
+    //     size_t r = height(current->right) + 1;
+    //     return std::max(l, r);
+    // }
+
+    // size_t black_nodes(node& current) {
+    //     if (current == NULL)
+    //         return 1;
+    //     size_t l = black_nodes(current->left);
+    //     size_t r = black_nodes(current->right);
+    //     if (l != r) {
+    //         // throw error
+    //         // or fix the tree
+    //     }
+    //     if (current->col == BLACK) {
+    //         l = l + 1;
+    //     }
+    //     return l;
+    // }
 
     void left_rotate(node current) {
         node tmp = current->right;
@@ -70,6 +170,7 @@ class red_black_tree {
         }
         if (current->parent == NULL) {
             _root = tmp;
+            _root->col = BLACK;
             tmp->parent = NULL;
         } else {
             tmp->parent = current->parent;
@@ -82,7 +183,6 @@ class red_black_tree {
             }
         }
         tmp->left = current;
-        assert(current != NULL);
         current->pos = LEFT;
         current->parent = tmp;
     }
@@ -96,10 +196,11 @@ class red_black_tree {
         }
         if (current->parent == NULL) {
             _root = tmp;
+            _root->col = BLACK;
             tmp->parent = NULL;
         } else {
             tmp->parent = current->parent;
-            if (current->pos == LEFT) {
+            if (current->pos == RIGHT) {
                 tmp->pos = RIGHT;
                 tmp->parent->right = tmp;
             } else {
@@ -122,7 +223,7 @@ class red_black_tree {
         left_rotate(current);
     }
 
-    void rotate(node& current) {
+    void rotate(node current) {
         if (current->pos == LEFT) {
             if (current->parent->pos == LEFT) {
                 right_rotate(current->parent->parent);
@@ -156,7 +257,6 @@ class red_black_tree {
 
     void correct_tree(node& current) {
         if (current->parent->pos == LEFT) {
-            // uncle is current.parent.parent.right
             if (current->parent->parent->right == NULL ||
                 current->parent->parent->right->col == BLACK) {
                 return rotate(current);
@@ -167,8 +267,6 @@ class red_black_tree {
             current->parent->col = BLACK;
             return;
         }
-        // uncle is in the left of the parent->parent
-        // uncle is current.parent.parent.right
         if (current->parent->parent->left == NULL ||
             current->parent->parent->left->col == BLACK) {
             return rotate(current);
@@ -179,7 +277,7 @@ class red_black_tree {
         current->parent->col = BLACK;
     }
 
-    void check_color(node& current) {
+    void check_color(node current) {
         if (current == _root)
             return;
         if (current->col == RED && current->parent->col == RED)
@@ -187,7 +285,7 @@ class red_black_tree {
         check_color(current->parent);
     }
 
-    ft::pair<node, bool> add(node& head, const value_type& t) {
+    ft::pair<node, bool> add(node head, const value_type& t) {
         if (_comp(head->data, t)) {
             if (head->right == NULL) {
                 head->right = _alloc.allocate(1);
@@ -217,13 +315,14 @@ class red_black_tree {
             return;
         }
         print(head->right, depth + 1);
-        // std::cout << std::string(depth, '\t') << '[' << head->data << " "
-        //           << ((head->pos == RIGHT) ? "right" : "left")
-        //           << ((head->col == RED) ? " red" : " black")
-        //           << " parent == " << head->parent << ']' << " "
-        //           << "\n\n";
-        std::cout << std::string(depth, '\t') << '[' << head->data << ']'
+        std::cout << std::string(depth, '\t') << '[' << head->data << " "
+                  << ((head->pos == RIGHT) ? "right" : "left")
+                  << ((head->col == RED) ? " red" : " black")
+                  // << " parent == " << head->parent
+                  << ']' << " "
                   << "\n\n";
+        // std::cout << std::string(depth, '\t') << '[' << head->data << ']'
+        //           << "\n\n";
         print(head->left, depth + 1);
     }
 
@@ -241,6 +340,7 @@ class red_black_tree {
         ft::pair<node, bool> ret = add(_root, t);
         if (ret.second)
             check_color(ret.first);
+        _root->col = BLACK;
         return ret;
     };
 
