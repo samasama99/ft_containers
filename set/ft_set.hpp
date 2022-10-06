@@ -124,11 +124,11 @@ class set {
     void swap(set& s);
 
     // observers:
-    allocator_type get_allocator() const;
+    allocator_type get_allocator() const { return Allocator(); };
 
-    key_compare key_comp() const;
+    key_compare key_comp() const { return value_compare(); };
 
-    value_compare value_comp() const;
+    value_compare value_comp() const { return key_comp(); };
 
     // set operations:
     iterator find(const key_type& k) {
@@ -138,24 +138,39 @@ class set {
         return iterator(p);
     };
 
-    const_iterator find(const key_type& k) const;
+    size_type count(const key_type& k) const {
+        return ((_tree.find(k)) ? 1 : 0);
+    };
 
-    template <typename K>
-    iterator find(const K& x);
+    iterator lower_bound(const key_type& k) { return find(k); };
 
-    size_type count(const key_type& k) const;
+    const_iterator lower_bound(const key_type& k) const { return find(k); };
 
-    iterator lower_bound(const key_type& k);
+    iterator upper_bound(const key_type& k) {
+        typename tree_type::node i = _tree.find(k);
+        if (i == NULL)
+            return end();
+        if (i->right)
+            return iterator(i->right);
+        return end();
+    };
 
-    const_iterator lower_bound(const key_type& k) const;
+    const_iterator upper_bound(const key_type& k) const {
+        typename tree_type::node i = _tree.find(k);
+        if (i == NULL)
+            return end();
+        if (i->right)
+            return const_iterator(i->right);
+        return end();
+    };
 
-    iterator upper_bound(const key_type& k);
+    pair<const_iterator, const_iterator> equal_range(const key_type& k) const {
+        return ft::make_pair(lower_bound(k), upper_bound(k));
+    };
 
-    const_iterator upper_bound(const key_type& k) const;
-
-    pair<iterator, iterator> equal_range(const key_type& k);
-
-    pair<const_iterator, const_iterator> equal_range(const key_type& k) const;
+    pair<iterator, iterator> equal_range(const key_type& k) {
+        return ft::make_pair(lower_bound(k), upper_bound(k));
+    };
 
     void print() { _tree.print(); };
 };
