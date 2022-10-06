@@ -402,14 +402,18 @@ class red_black_tree {
             return ft::make_pair(_root, true);
         }
         ft::pair<node, bool> ret = add(_root, t);
-        if (ret.second)
+        if (ret.second) {
             check_color(ret.first);
+            _size += 1;
+        }
         _root->col = BLACK;
         _end->left = theRightest(_root);
         return ret;
     };
 
     node find(T elem) const { return find(_root, elem); }
+
+    size_t size() const { return _size; }
 
     node theLeftest() { return theLeftest(_root); }
 

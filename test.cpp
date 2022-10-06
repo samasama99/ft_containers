@@ -124,4 +124,30 @@ int main() {
         }
         std::cout << "testing range insert with ft::vector\n";
     }
+    {
+        ft::set<int> ft;
+        assert(ft.empty());
+        ft.insert(1);
+        assert(ft.size() == 1);
+        ft.insert(2);
+        assert(ft.size() == 2);
+        ft.insert(3);
+        assert(ft.size() == 3);
+        ft.insert(4);
+        assert(ft.size() == 4);
+        ft.insert(5);
+        assert(ft.size() == 5);
+        ft.insert(6);
+        assert(ft.size() == 6);
+        ft.insert(7);
+        assert(ft.size() == 7);
+        ft.insert(8);
+        assert(ft.size() == 8);
+        ft.insert(9);
+        assert(ft.size() == 9);
+        ft.insert(10);
+        assert(ft.size() == 10);
+
+        std::cout << "testing range insert with ft::vector\n";
+    }
 }

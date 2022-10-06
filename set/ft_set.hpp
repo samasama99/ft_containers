@@ -80,11 +80,11 @@ class set {
     const_reverse_iterator rend() const;
 
     // capacity:
-    bool empty() const;
+    bool empty() const { return _tree.size() == 0; };
 
-    size_type size() const;
+    size_type size() const { return _tree.size(); };
 
-    size_type max_size() const;
+    size_type max_size() const { return Allocator().size(); };
 
     // modifiers:
     pair<iterator, bool> insert(const value_type& v) {
