@@ -26,8 +26,8 @@ class setIterator {
 
     explicit setIterator(T* t) : p(t){};
 
-    template <class iter>
-    setIterator(const iter& src) : p(src.base()){};
+    // template <class iter>
+    // setIterator(const iter& src) : p(src.base()){};
 
     ~setIterator(){};
 

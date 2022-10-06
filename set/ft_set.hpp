@@ -8,6 +8,10 @@ template <class Key,
           class Allocator = std::allocator<Key> >
 
 class set {
+    typedef red_black_tree<Key, Compare, Allocator> tree_type;
+
+    tree_type _tree;
+
    public:
     // types:
     typedef Key key_type;
@@ -22,11 +26,6 @@ class set {
     typedef typename allocator_type::pointer pointer;
     typedef typename allocator_type::const_pointer const_pointer;
 
-    // typedef implementation - defined iterator;
-    // typedef implementation - defined const_iterator;
-    // typedef std::reverse_iterator<iterator> reverse_iterator;
-    // typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
-
     typedef ft::setIterator<tree_node<value_type> > iterator;
     typedef const ft::setIterator<tree_node<value_type> > const_iterator;
 
@@ -36,77 +35,129 @@ class set {
         const_reverse_iterator;
 
     // construct/copy/destroy:
-    set();
-    explicit set(const value_compare& comp);
-    set(const value_compare& comp, const allocator_type& a);
+    set() : _tree(){};
+
+    explicit set(const value_compare& comp) : _tree(comp){};
+
+    set(const value_compare& comp, const allocator_type& a) : _tree(comp, a){};
+
     template <class InputIterator>
     set(InputIterator first,
         InputIterator last,
         const value_compare& comp = value_compare());
+
     template <class InputIterator>
     set(InputIterator first,
         InputIterator last,
         const value_compare& comp,
         const allocator_type& a);
+
     set(const set& s);
+
     explicit set(const allocator_type& a);
+
     set(const set& s, const allocator_type& a);
-    template <class InputIterator>
-    set(InputIterator first, InputIterator last, const allocator_type& a)
-        : set(first, last, Compare(), a) {}  // C++14
-    ~set();
+
+    ~set(){};
 
     set& operator=(const set& s);
 
     // iterators:
-    // iterator begin();
-    // const_iterator begin() const;
-    // iterator end();
-    // const_iterator end() const;
+    iterator begin() { return iterator(_tree.theLeftest()); };
 
-    // reverse_iterator rbegin();
-    // const_reverse_iterator rbegin() const;
-    // reverse_iterator rend();
-    // const_reverse_iterator rend() const;
+    const_iterator begin() const { return iterator(_tree.theLeftest()); };
+
+    iterator end() { return iterator(_tree.getEnd()); };
+
+    const_iterator end() const { return iterator(_tree.getEnd()); };
+
+    reverse_iterator rbegin();
+
+    const_reverse_iterator rbegin() const;
+
+    reverse_iterator rend();
+
+    const_reverse_iterator rend() const;
 
     // capacity:
     bool empty() const;
+
     size_type size() const;
+
     size_type max_size() const;
 
     // modifiers:
-    pair<iterator, bool> insert(const value_type& v);
-    iterator insert(const_iterator position, const value_type& v);
+    pair<iterator, bool> insert(const value_type& v) {
+        ft::pair<tree_node<value_type>*, bool> p = _tree.add(v);
+        return ft::make_pair(iterator(p.first), p.second);
+    };
+
+    iterator insert(const_iterator position, const value_type& v) {
+        if (!position.base()->left || !position.base()->right)
+            return insert(v).first;
+        typename tree_type::node p = _tree.inOrderPredecessor(position.base());
+        typename tree_type::node s = _tree.inOrderSuccessor(position.base());
+        if (p && s) {
+            if (_vcomp(s->data, p->data) && _vcomp(p->data, s->data)) {
+                typename tree_type::node b = position.base();
+                return iterator(_tree.insert(b, v).first);
+            }
+        }
+        return insert(v).first;
+    };
+
     template <class InputIterator>
-    void insert(InputIterator first, InputIterator last);
+    void insert(InputIterator first, InputIterator last) {
+        for (InputIterator i = first; i != last; ++i) {
+            insert(*i);
+        }
+    };
 
     iterator erase(const_iterator position);
+
     size_type erase(const key_type& k);
+
     iterator erase(const_iterator first, const_iterator last);
+
     void clear();
 
     void swap(set& s);
 
     // observers:
     allocator_type get_allocator() const;
+
     key_compare key_comp() const;
+
     value_compare value_comp() const;
 
     // set operations:
-    iterator find(const key_type& k);
+    iterator find(const key_type& k) {
+        tree_node<value_type>* p = _tree.find(k);
+        if (p == NULL)
+            return iterator(_tree.getEnd());
+        return iterator(p);
+    };
+
     const_iterator find(const key_type& k) const;
+
     template <typename K>
     iterator find(const K& x);
-    template <typename K>
 
     size_type count(const key_type& k) const;
+
     iterator lower_bound(const key_type& k);
+
     const_iterator lower_bound(const key_type& k) const;
 
     iterator upper_bound(const key_type& k);
+
     const_iterator upper_bound(const key_type& k) const;
+
     pair<iterator, iterator> equal_range(const key_type& k);
+
     pair<const_iterator, const_iterator> equal_range(const key_type& k) const;
+
+    void print() { _tree.print(); };
 };
 
 template <class Key, class Compare, class Allocator>

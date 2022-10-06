@@ -2,25 +2,28 @@
 #include <ft_pair.hpp>
 #include <includes.hpp>
 
-#include <cstddef>
-#include <map>
-#include <ostream>
-#include <queue>
-#include <vector>
+// #include <cstddef>
+// #include <map>
+// #include <ostream>
+// #include <queue>
+// #include <vector>
 
 typedef enum { RED, BLACK } Color;
-typedef enum { LEFT, RIGHT } Position;
+typedef enum { LEFT, RIGHT, END } Position;
 
 template <class T>
 struct tree_node {
+    typedef T value_type;
+
     T data;
     tree_node* left;
     tree_node* right;
     tree_node* parent;
     Color col;
     Position pos;
+    tree_node* _end;
 
-    tree_node(tree_node* p) : left(NULL), right(p), parent(NULL) {}
+    tree_node(tree_node* p) : left(NULL), right(p), parent(NULL), pos(END) {}
 
     tree_node(T data)
         : data(data),
@@ -43,6 +46,8 @@ struct tree_node {
     }
 
     static tree_node* TopRight(tree_node* current, tree_node* prev) {
+        if (current == NULL)
+            return prev->_end;
         if (prev == current->right)
             return TopRight(current->parent, current);
         return current;
@@ -68,13 +73,13 @@ struct tree_node {
     };
 };
 
-template <class T,
-          class Comp = std::less<T>,
-          class Alloc = std::allocator<tree_node<T> > >
+template <class T, class Comp = std::less<T>, class Alloc = std::allocator<T> >
 class red_black_tree {
    public:
     typedef tree_node<T>* node;
     typedef T value_type;
+    typedef typename Alloc::template rebind<tree_node<value_type> >::other
+        allocator_type;
 
    private:
     // checker { made by : jalalium }
@@ -292,6 +297,7 @@ class red_black_tree {
                 _alloc.construct(head->right, t);
                 head->right->pos = RIGHT;
                 head->right->parent = head;
+                head->right->_end = _end;
                 return ft::make_pair(head->right, true);
             }
             return add(head->right, t);
@@ -302,6 +308,7 @@ class red_black_tree {
                 _alloc.construct(head->left, t);
                 head->left->pos = LEFT;
                 head->left->parent = head;
+                head->left->_end = _end;
                 return ft::make_pair(head->left, true);
             }
             return add(head->left, t);
@@ -326,14 +333,71 @@ class red_black_tree {
         print(head->left, depth + 1);
     }
 
+    node find(node head, T elem) const {
+        if (head == NULL)
+            return NULL;
+        if (head == NULL)
+            return NULL;
+        if (!_comp(head->data, elem) && !_comp(elem, head->data))
+            return head;
+        if (_comp(elem, head->data))
+            return find(head->left, elem);
+        return find(head->right, elem);
+    }
+
+    node theLeftest(node head) {
+        if (head == NULL)
+            return NULL;
+        if (head == _end)
+            return head;
+        if (head->left == NULL)
+            return head;
+        return theLeftest(head->left);
+    }
+
+    const node theLeftest(node head) const {
+        if (head == NULL)
+            return NULL;
+        if (head == _end)
+            return head;
+        if (head->left == NULL)
+            return head;
+        return theLeftest(head->left);
+    }
+
+    node theRightest(node head) {
+        if (head == NULL)
+            return NULL;
+        if (head == _end)
+            return head;
+        if (head->right == NULL)
+            return head;
+        return theRightest(head->right);
+    }
+
+    const node theRightest(node head) const {
+        if (head == NULL)
+            return NULL;
+        if (head == _end)
+            return head;
+        if (head->right == NULL)
+            return head;
+        return theRightest(head->right);
+    }
+
    public:
     void print() { print(_root); }
+
+    const node& getEnd() { return _end; }
+    node& getRoot() { return _root; }
 
     ft::pair<node, bool> add(const value_type& t) {
         if (_root == NULL) {
             _root = _alloc.allocate(1);
             _alloc.construct(_root, t);
             _root->col = BLACK;
+            _root->_end = _end;
+            _end->left = theRightest(_root);
             _size += 1;
             return ft::make_pair(_root, true);
         }
@@ -341,14 +405,55 @@ class red_black_tree {
         if (ret.second)
             check_color(ret.first);
         _root->col = BLACK;
+        _end->left = theRightest(_root);
         return ret;
     };
 
-    red_black_tree() : _root(NULL), _size(0), _alloc(Alloc()), _comp(Comp()) {}
+    node find(T elem) const { return find(_root, elem); }
+
+    node theLeftest() { return theLeftest(_root); }
+
+    const node theLeftest() const { return theLeftest(_root); }
+
+    node theRightest() { return theRightest(_root); }
+
+    const node theRightest() const { return theRightest(_root); }
+
+    // void clear() {
+    //     while (_root && _root != _end && _size != 0) {
+    //         remove(_root, _root->data);
+    //     }
+    //     _root = _end;
+    //     _size = 0;
+    // }
+
+    red_black_tree(Comp comp, Alloc alloc)
+        : _root(NULL),
+          _end(_alloc.allocate(1)),
+          _size(0),
+          _alloc(alloc),
+          _comp(comp) {}
+
+    red_black_tree(Comp comp)
+        : _root(NULL),
+          _end(_alloc.allocate(1)),
+          _size(0),
+          _alloc(Alloc()),
+          _comp(comp) {}
+
+    red_black_tree()
+        : _root(NULL),
+          _end(_alloc.allocate(1)),
+          _size(0),
+          _alloc(allocator_type()),
+          _comp(Comp()) {
+        _alloc.construct(_end, _root);
+    }
 
    private:
     Comp _comp;
-    Alloc _alloc;
+    allocator_type _alloc;
     node _root;
+    tree_node<T>* const _end;
     size_t _size;
 };
