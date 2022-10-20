@@ -15,6 +15,7 @@ if you insert you get a pair
 
 ## iterators
 
+``````
         4
       /    \
      2      6
@@ -22,6 +23,7 @@ if you insert you get a pair
    1   3  5   7
                \
                 8
+``````
 
 ```
 // pseudo code
