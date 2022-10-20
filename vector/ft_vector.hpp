@@ -65,9 +65,10 @@ class vector {
         for (size_type i = 0; i < n; ++i) {
             _alloc.construct(&_array[i], val);
         }
-        for (size_type i = 0; i < n; ++i) {
-            _array[i] = val;
-        }
+        // NOTE:: i think this is just dead code ??
+        // for (size_type i = 0; i < n; ++i) {
+        //     _array[i] = val;
+        // }
     };
 
     template <class InputIterator>
@@ -95,11 +96,11 @@ class vector {
     };
 
     // Operators overloading ::
-    vector& operator=(const vector& x) {
-        if (&x == this)
+    vector& operator=(const vector& src) {
+        if (&src == this)
             return *this;
-        assign(x.begin(), x.end());
-        _alloc = x._alloc;
+        assign(src.begin(), src.end());
+        _alloc = src._alloc;
         return *this;
     };
 

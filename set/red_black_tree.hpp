@@ -3,8 +3,8 @@
 #include <includes.hpp>
 
 // #include <cstddef>
+// #include <iostream>
 // #include <map>
-// #include <ostream>
 // #include <queue>
 // #include <vector>
 
@@ -77,6 +77,7 @@ template <class T, class Comp = std::less<T>, class Alloc = std::allocator<T> >
 class red_black_tree {
    public:
     typedef tree_node<T>* node;
+    typedef tree_node<T>* ROOT;
     typedef T value_type;
     typedef typename Alloc::template rebind<tree_node<value_type> >::other
         allocator_type;
@@ -86,28 +87,28 @@ class red_black_tree {
     // bool check(node n, std::map<node, std::vector<int> >& mp) {
     //     bool ok = true;
     //     if (n->left != NULL) {
-    //         if (n->value <= n->left->value) {
+    //         if (n->data <= n->left->data) {
     //             std::cout << "LEFT CHILD LARGER OR EQUAL TO PARENT " <<
-    //             n->value
-    //                       << " " << n->left->value << std::endl;
+    //             n->data
+    //                       << " " << n->left->data << std::endl;
     //             return false;
     //         }
-    //         if (n->color == RED && n->left->color == RED) {
-    //             std::cout << "RED PARENT WITH RED CHILD: " << n->value << " "
-    //                       << n->left->value << std::endl;
+    //         if (n->col == RED && n->left->col == RED) {
+    //             std::cout << "RED PARENT WITH RED CHILD: " << n->data << " "
+    //                       << n->left->data << std::endl;
     //             return false;
     //         }
     //         ok &= check(n->left, mp);
     //     }
     //     if (n->right != NULL) {
-    //         if (n->value >= n->right->value) {
+    //         if (n->data >= n->right->data) {
     //             std::cout << "RIGHT CHILD SMALLER OR EQUAL TO PARENT "
-    //                       << n->value << " " << n->left->value << std::endl;
+    //                       << n->data << " " << n->left->data << std::endl;
     //             return false;
     //         }
-    //         if (n->color == RED && n->right->color == RED) {
-    //             std::cout << "RED PARENT WITH RED CHILD: " << n->value << " "
-    //                       << n->right->value << std::endl;
+    //         if (n->col == RED && n->right->col == RED) {
+    //             std::cout << "RED PARENT WITH RED CHILD: " << n->data << " "
+    //                       << n->right->data << std::endl;
     //             return false;
     //         }
     //         ok &= check(n->right, mp);
@@ -125,10 +126,10 @@ class red_black_tree {
     //         tmp.push_back(0);
     //     std::sort(tmp.begin(), tmp.end());
     //     for (int& z : tmp)
-    //         z += (n->color == BLACK);
+    //         z += (n->col == BLACK);
     //     mp[n] = tmp;
     //     if (tmp[0] != tmp.back()) {
-    //         std::cout << "NODE " << n->value << std::endl;
+    //         std::cout << "NODE " << n->data << std::endl;
     //         for (int z : tmp)
     //             std::cout << z << " ";
     //         std::cout << std::endl;
@@ -283,6 +284,8 @@ class red_black_tree {
     }
 
     void check_color(node current) {
+        if (current == NULL)
+            return;
         if (current == _root)
             return;
         if (current->col == RED && current->parent->col == RED)
@@ -313,7 +316,6 @@ class red_black_tree {
             }
             return add(head->left, t);
         }
-        assert(true);
         return ft::make_pair(head, false);
     }
 
@@ -399,8 +401,13 @@ class red_black_tree {
             _root->_end = _end;
             _end->left = theRightest(_root);
             _size += 1;
+            // // checking time !
+            // std::map<node, std::vector<int> > mp;
+            // assert(check(_root, mp));
+            // std::cout << "INSERTED " << t << " SUCCESSFULLY" << std::endl;
             return ft::make_pair(_root, true);
         }
+
         ft::pair<node, bool> ret = add(_root, t);
         if (ret.second) {
             check_color(ret.first);
@@ -408,6 +415,10 @@ class red_black_tree {
         }
         _root->col = BLACK;
         _end->left = theRightest(_root);
+        // checking time !
+        // std::map<node, std::vector<int> > mp;
+        // assert(check(_root, mp));
+        // std::cout << "INSERTED " << t << " SUCCESSFULLY" << std::endl;
         return ret;
     };
 
@@ -458,6 +469,6 @@ class red_black_tree {
     Comp _comp;
     allocator_type _alloc;
     node _root;
-    tree_node<T>* const _end;
+    node const _end;
     size_t _size;
 };

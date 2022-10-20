@@ -224,6 +224,7 @@ class map {
 
     const_iterator rend() const { return const_iterator(_tree._end); }
 
+    // TODO:: remove this or make it private
     void print() { _tree.print(); }
 
    private:

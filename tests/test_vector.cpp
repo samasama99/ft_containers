@@ -1017,6 +1017,10 @@ int main() {
         assert(vec > vec2);
         std::cout << "pair relational operators :: pass\n";
     }
+    {
+        std::cout << "test std algo\n";
+        assert(true);
+    }
     std::cerr << "all passed\n";
     system("leaks a.out");
 }
