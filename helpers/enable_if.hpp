@@ -23,3 +23,16 @@ struct enable_if<true, T> {
     typedef T type;
 };
 }  // namespace ft
+
+// enable_if<is_same<char, T>, T>
+
+// enable_if<is_same<char, char>, char>
+// enable_if<true, char>::type == char
+
+// enable_if<is_same<char, int>, int>
+// enable_if<true, char>::type == void
+
+// template <typename T>
+// int fn(enable_if<is_same<char, T>, T>::type x) {
+//     return x;
+// }

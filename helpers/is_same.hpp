@@ -23,3 +23,7 @@ struct is_same<T, T> {
     static const bool value = true;
 };
 }  // namespace ft
+
+// ft::is_same<int, char>::value == false;
+
+// ft::is_same<int, int>::value == true;
