@@ -224,10 +224,8 @@ class map {
 
     const_iterator rend() const { return const_iterator(_tree._end); }
 
-    // TODO:: remove this or make it private
-    void print() { _tree.print(); }
-
    private:
+    void print() { _tree.print(); }
     allocator_type _alloc;
     key_compare _comp;
     value_compare _vcomp;

@@ -11,11 +11,12 @@
 /* ************************************************************************** */
 
 #pragma once
-#include "../helpers/iterators_traits.hpp"
+#include <enable_if.hpp>
+#include <iterators_traits.hpp>
 
 namespace ft {
 template <typename T>
-class vectorIterator {
+class vectorIterator : public std::random_access_iterator_tag {
    protected:
     T* p;
     vectorIterator(const long t) { (void)t; };
@@ -85,6 +86,10 @@ class vectorIterator {
         --p;
         return *this;
     };
+
+    difference_type operator-(vectorIterator v) const { return p - v.base(); };
+
+    difference_type operator+(vectorIterator v) const { return p + v.base(); };
 
     vectorIterator operator-(const difference_type v) const {
         return vectorIterator(p - v);
@@ -179,6 +184,14 @@ class reverseVectorIterator {
     reverseVectorIterator& operator--() {
         ++base_iter;
         return *this;
+    };
+
+    difference_type operator-(reverseVectorIterator v) const {
+        return base() - v.base();
+    };
+
+    difference_type operator+(reverseVectorIterator v) const {
+        return base() + v.base();
     };
 
     reverseVectorIterator operator-(const difference_type v) const {

@@ -15,7 +15,7 @@
 
 namespace ft {
 template <typename T>
-class mapIterator {
+class mapIterator : public std::bidirectional_iterator_tag {
    public:
     typedef typename ft::iterator_traits<T*>::difference_type difference_type;
     typedef typename ft::iterator_traits<T*>::value_type value_type;

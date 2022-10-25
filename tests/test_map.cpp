@@ -10,11 +10,22 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <algorithm>
 #include <ft_map.hpp>
 #include <iostream>
 #include <map>
 
 using namespace std;
+
+void add_self(ft::pair<const int, int>& x) {
+    x.second += x.second;
+}
+
+bool valid_iter(std::bidirectional_iterator_tag x) {
+    (void)x;
+    cout << "valid\n";
+    return true;
+}
 
 int main() {
     {
@@ -263,6 +274,24 @@ int main() {
         assert(i->first == 1);
         cout << "changing the comp object\n";
     }
-    system("leaks a.out");
+    {
+        ft::map<int, int> t1;
+        t1[0] = 65413;
+        t1[2] = 232;
+        t1[10] = 64654;
+        t1[5] = 54684;
+        t1[99] = 99842;
+        std::for_each(t1.begin(), t1.end(), add_self);
+        assert(t1[0] == (2 * 65413));
+        assert(t1[2] == (232 * 2));
+        assert(t1[10] == (64654 * 2));
+        assert(t1[5] == (54684 * 2));
+        assert(t1[99] == (99842 * 2));
+    }
+    {
+        ft::map<int, int> t1;
+        assert(valid_iter(t1.begin()));
+    }
+    system("leaks test_map");
     std::cout << "all pass" << std::endl;
 }

@@ -10,13 +10,19 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <algorithm>
 #include <ft_vector.hpp>
+#include <functional>
 #include <iostream>
 #include <list>
 #include <string>
 #include <vector>
 
 using std::cout;
+
+int add_one(int x) {
+    return x + 1;
+}
 
 int main() {
     {
@@ -1018,9 +1024,68 @@ int main() {
         std::cout << "pair relational operators :: pass\n";
     }
     {
-        std::cout << "test std algo\n";
-        assert(true);
+        ft::vector<int> x;
+        ft::vector<int> y;
+        x.push_back(1);
+        x.push_back(2);
+        x.push_back(3);
+        x.push_back(4);
+        x.push_back(5);
+        std::transform(x.begin(), x.end(), std::back_inserter(y), add_one);
+        assert(y[0] == 2);
+        assert(y[1] == 3);
+        assert(y[2] == 4);
+        assert(y[3] == 5);
+        assert(y[4] == 6);
+        std::cout << "working with std::transform :: pass\n";
+    }
+    {
+        ft::vector<int> x;
+        ft::vector<int> y;
+        x.push_back(1);
+        x.push_back(2);
+        x.push_back(3);
+        x.push_back(4);
+        x.push_back(5);
+        std::transform(x.rbegin(), x.rend(), std::back_inserter(y), add_one);
+        assert(y[0] == 6);
+        assert(y[1] == 5);
+        assert(y[2] == 4);
+        assert(y[3] == 3);
+        assert(y[4] == 2);
+        std::cout
+            << "working with std::transform with reverse_iterator :: pass\n";
+    }
+    {
+        ft::vector<int> x;
+        x.push_back(5);
+        x.push_back(9);
+        x.push_back(1);
+        x.push_back(2);
+        x.push_back(7);
+        std::sort(x.begin(), x.end());
+        assert(x[0] == 1);
+        assert(x[1] == 2);
+        assert(x[2] == 5);
+        assert(x[3] == 7);
+        assert(x[4] == 9);
+        std::cout << "working with std::sort  :: pass\n";
+    }
+    {
+        ft::vector<int> x;
+        x.push_back(5);
+        x.push_back(9);
+        x.push_back(1);
+        x.push_back(2);
+        x.push_back(7);
+        std::sort(x.rbegin(), x.rend());
+        assert(x[0] == 9);
+        assert(x[1] == 7);
+        assert(x[2] == 5);
+        assert(x[3] == 2);
+        assert(x[4] == 1);
+        std::cout << "working with std::sort with reverse_iterator :: pass\n";
     }
     std::cerr << "all passed\n";
-    system("leaks a.out");
+    system("leaks test_vector");
 }
