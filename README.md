@@ -96,6 +96,7 @@ $ make fclean
 ## References
 When implementing the containers, references were made to the following resources:
 
-cplusplus.com
-cppreference.com
+- [cplusplus](cplusplus.com)
+- [cppreference](cppreference.com)
+
 These resources were used to understand the behavior and requirements of the standard containers in the C++98 standard.
