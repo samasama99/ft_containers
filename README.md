@@ -1,4 +1,4 @@
-![Header](./ft_container.png)
+![Header](./ft_containers.png)
 # ft_containers
 This project is an implementation of various container types of the C++ standard template library (STL) in C++98. It provides custom versions of the following containers: vector, map, stack, and pair.
 
@@ -42,9 +42,9 @@ int main() {
     vec.push_back(3);
 
     ft::map<int, std::string> map;
-    map.insert(std::make_pair(1, "one"));
-    map.insert(std::make_pair(2, "two"));
-    map.insert(std::make_pair(3, "three"));
+    map.insert(ft::make_pair(1, "one"));
+    map.insert(ft::make_pair(2, "two"));
+    map.insert(ft::make_pair(3, "three"));
 
     ft::stack<int> stack;
     stack.push(1);
